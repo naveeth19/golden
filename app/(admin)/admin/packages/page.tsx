@@ -15,23 +15,47 @@ export default function AdminPackagesPage() {
   }, []);
 
   async function loadPackages() {
-    const { data } = await supabase
-      .from("packages")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setPackages((data as Package[]) || []);
+    try {
+      const { data, error } = await supabase
+        .from("packages")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) {
+        console.error("Failed to load packages:", error);
+      }
+      setPackages((data as Package[]) || []);
+    } catch (e) {
+      console.error("Unexpected error loading packages:", e);
+    }
   }
 
   async function toggleField(id: string, field: "is_featured" | "is_active", current: boolean) {
-    await supabase.from("packages").update({ [field]: !current }).eq("id", id);
-    loadPackages();
+    try {
+      const { error } = await supabase.from("packages").update({ [field]: !current }).eq("id", id);
+      if (error) {
+        console.error(`Failed to toggle ${field}:`, error);
+      }
+      loadPackages();
+    } catch (e) {
+      console.error("Unexpected error toggling field:", e);
+    }
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this package?")) return;
-    await supabase.from("itinerary_days").delete().eq("package_id", id);
-    await supabase.from("packages").delete().eq("id", id);
-    loadPackages();
+    try {
+      const { error: itineraryError } = await supabase.from("itinerary_days").delete().eq("package_id", id);
+      if (itineraryError) {
+        console.error("Failed to delete itinerary days:", itineraryError);
+      }
+      const { error: packageError } = await supabase.from("packages").delete().eq("id", id);
+      if (packageError) {
+        console.error("Failed to delete package:", packageError);
+      }
+      loadPackages();
+    } catch (e) {
+      console.error("Unexpected error deleting package:", e);
+    }
   }
 
   return (

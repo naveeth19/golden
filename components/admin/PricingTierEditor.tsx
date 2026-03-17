@@ -99,35 +99,49 @@ export default function PricingTierEditor({
     setSaving(true);
     const supabase = createClient();
 
-    // Delete removed tiers
-    for (const id of deletedIds) {
-      await supabase.from("package_pricing_tiers").delete().eq("id", id);
-    }
-
-    // Upsert tiers
-    for (const tier of localTiers) {
-      const payload = {
-        package_id: packageId,
-        min_people: tier.min_people,
-        max_people: tier.max_people,
-        vehicle_name: tier.vehicle_name || null,
-        price: tier.price,
-        price_type: tier.price_type,
-      };
-
-      if (tier.isNew) {
-        await supabase.from("package_pricing_tiers").insert(payload);
-      } else {
-        await supabase
-          .from("package_pricing_tiers")
-          .update(payload)
-          .eq("id", tier.id);
+    try {
+      // Delete removed tiers
+      for (const id of deletedIds) {
+        const { error } = await supabase.from("package_pricing_tiers").delete().eq("id", id);
+        if (error) {
+          console.error("Failed to delete pricing tier:", error);
+        }
       }
-    }
 
-    setSaving(false);
-    setDeletedIds([]);
-    onUpdate();
+      // Upsert tiers
+      for (const tier of localTiers) {
+        const payload = {
+          package_id: packageId,
+          min_people: tier.min_people,
+          max_people: tier.max_people,
+          vehicle_name: tier.vehicle_name || null,
+          price: tier.price,
+          price_type: tier.price_type,
+        };
+
+        if (tier.isNew) {
+          const { error } = await supabase.from("package_pricing_tiers").insert(payload);
+          if (error) {
+            console.error("Failed to insert pricing tier:", error);
+          }
+        } else {
+          const { error } = await supabase
+            .from("package_pricing_tiers")
+            .update(payload)
+            .eq("id", tier.id);
+          if (error) {
+            console.error("Failed to update pricing tier:", error);
+          }
+        }
+      }
+
+      setSaving(false);
+      setDeletedIds([]);
+      onUpdate();
+    } catch (e) {
+      console.error("Unexpected error saving pricing tiers:", e);
+      setSaving(false);
+    }
   }
 
   const inputCls =

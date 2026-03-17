@@ -92,14 +92,25 @@ export default function PackageForm({
       show_vehicle: showVehicle, pricing_type: pricingType,
     };
 
-    if (pkg) {
-      await supabase.from("packages").update(payload).eq("id", pkg.id);
+    try {
+      if (pkg) {
+        const { error } = await supabase.from("packages").update(payload).eq("id", pkg.id);
+        if (error) {
+          console.error("Failed to update package:", error);
+        }
+        setLoading(false);
+        onSaved();
+      } else {
+        const { data, error } = await supabase.from("packages").insert(payload).select("id").single();
+        if (error) {
+          console.error("Failed to create package:", error);
+        }
+        setLoading(false);
+        onSaved(data?.id);
+      }
+    } catch (e) {
+      console.error("Unexpected error saving package:", e);
       setLoading(false);
-      onSaved();
-    } else {
-      const { data } = await supabase.from("packages").insert(payload).select("id").single();
-      setLoading(false);
-      onSaved(data?.id);
     }
   }
 

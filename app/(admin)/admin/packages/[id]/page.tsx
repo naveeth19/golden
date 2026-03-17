@@ -31,28 +31,41 @@ export default function AdminPackageEditPage() {
 
   async function loadData() {
     setLoading(true);
-    const { data: pkgData } = await supabase
-      .from("packages")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (pkgData) setPkg(pkgData as Package);
+    try {
+      const { data: pkgData, error: pkgError } = await supabase
+        .from("packages")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (pkgError) {
+        console.error("Failed to load package:", pkgError);
+      }
+      if (pkgData) setPkg(pkgData as Package);
 
-    const { data: dayData } = await supabase
-      .from("itinerary_days")
-      .select("*")
-      .eq("package_id", id)
-      .order("day_number", { ascending: true });
-    setDays((dayData as ItineraryDay[]) || []);
+      const { data: dayData, error: dayError } = await supabase
+        .from("itinerary_days")
+        .select("*")
+        .eq("package_id", id)
+        .order("day_number", { ascending: true });
+      if (dayError) {
+        console.error("Failed to load itinerary days:", dayError);
+      }
+      setDays((dayData as ItineraryDay[]) || []);
 
-    const { data: tierData } = await supabase
-      .from("package_pricing_tiers")
-      .select("*")
-      .eq("package_id", id)
-      .order("min_people", { ascending: true });
-    setTiers((tierData as PricingTier[]) || []);
-
-    setLoading(false);
+      const { data: tierData, error: tierError } = await supabase
+        .from("package_pricing_tiers")
+        .select("*")
+        .eq("package_id", id)
+        .order("min_people", { ascending: true });
+      if (tierError) {
+        console.error("Failed to load pricing tiers:", tierError);
+      }
+      setTiers((tierData as PricingTier[]) || []);
+    } catch (e) {
+      console.error("Unexpected error loading package data:", e);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleSaved(newId?: string) {

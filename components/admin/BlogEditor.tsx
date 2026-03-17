@@ -52,9 +52,9 @@ function Toolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
             const supabase = createClient();
             const ext = file.name.split(".").pop();
             const path = `blogs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-            const { error } = await supabase.storage.from("media").upload(path, file);
+            const { error } = await supabase.storage.from("Media").upload(path, file);
             if (!error) {
-              const { data: urlData } = supabase.storage.from("media").getPublicUrl(path);
+              const { data: urlData } = supabase.storage.from("Media").getPublicUrl(path);
               if (urlData?.publicUrl) {
                 editor.chain().focus().setImage({ src: urlData.publicUrl }).run();
               }

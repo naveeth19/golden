@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -8,10 +9,13 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="relative w-9 h-9 flex items-center justify-center">
-                <div className="absolute inset-0 border-2 border-[var(--gt-red)] rounded-full" />
-                <span className="text-[var(--gt-red)] text-base font-bold" style={{ fontFamily: "var(--font-playfair)" }}>G</span>
-              </div>
+              <Image
+                src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+                alt="Golden Travels Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              />
               <span className="font-bold text-lg" style={{ fontFamily: "var(--font-playfair)" }}>Golden Travels</span>
             </div>
             <p className="text-sm text-white/60 mb-4">Premium Road Travel Since 1987</p>

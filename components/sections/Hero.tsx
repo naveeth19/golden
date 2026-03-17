@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const services = [
   "Outstation Rentals",
@@ -6,14 +7,6 @@ const services = [
   "City Taxi",
   "Enterprise Transport",
   "Event Management",
-];
-
-const vehicles = [
-  "Toyota Innova Crysta",
-  "Toyota Innova Hycross",
-  "Kia Carens",
-  "Tempo Traveller",
-  "Mini Bus",
 ];
 
 const stats = [
@@ -71,30 +64,17 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Right */}
-      <div className="relative bg-[var(--gt-navy)] flex flex-col items-center justify-center py-16 px-8 overflow-hidden">
-        {/* Concentric rings */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="w-[400px] h-[400px] border border-white/5 rounded-full" />
-          <div className="absolute inset-8 border border-white/5 rounded-full" />
-          <div className="absolute inset-16 border border-white/5 rounded-full" />
-          <div className="absolute inset-24 border border-white/5 rounded-full" />
-        </div>
-
-        {/* Vehicle list */}
-        <div className="relative z-10 space-y-3 mb-12">
-          {vehicles.map((v, i) => (
-            <div
-              key={v}
-              className={`text-sm tracking-wide ${
-                i === 0
-                  ? "text-white font-semibold border-l-2 border-[var(--gt-red)] pl-3"
-                  : "text-white/30 pl-3"
-              }`}
-            >
-              {v}
-            </div>
-          ))}
+      {/* Right — Vehicle image on white background */}
+      <div className="relative bg-white flex flex-col items-center justify-center py-16 px-8 overflow-hidden">
+        <div className="relative w-full h-full min-h-[400px] flex items-center justify-center">
+          <Image
+            src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/hero_1.png"
+            alt="Golden Travels Fleet Vehicles"
+            width={700}
+            height={500}
+            className="object-contain w-full h-auto"
+            priority
+          />
         </div>
 
         {/* Stats bar */}

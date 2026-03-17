@@ -1,8 +1,26 @@
+import Image from "next/image";
+
 const clients = [
-  { name: "TUV SUD", initials: "TS" },
-  { name: "New Mangalore Port Authority", initials: "NM" },
-  { name: "Govt. of Karnataka", initials: "GK" },
-  { name: "Brigade Group", initials: "BG" },
+  {
+    name: "Brigade Group",
+    logo: "https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/Clients/Brigade_Group.jpg",
+  },
+  {
+    name: "Holla Group",
+    logo: "https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/Clients/Holla-New-Logo-2022-removebg-preview.png",
+  },
+  {
+    name: "New Mangalore Port Trust",
+    logo: "https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/Clients/NMPT.png",
+  },
+  {
+    name: "TUV SUD",
+    logo: "https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/Clients/tuv-removebg-preview.png",
+  },
+  {
+    name: "Vizag Steel",
+    logo: "https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/Clients/VIZAG-STEEL.jpg",
+  },
 ];
 
 export default function ClientLogos() {
@@ -17,10 +35,14 @@ export default function ClientLogos() {
         <div className="flex flex-wrap items-center justify-center gap-12">
           {clients.map((c) => (
             <div key={c.name} className="flex flex-col items-center gap-3">
-              <div className="w-20 h-20 rounded-full border border-[var(--gt-border)] flex items-center justify-center">
-                <span className="text-lg font-bold text-[var(--gt-navy)]" style={{ fontFamily: "var(--font-playfair)" }}>
-                  {c.initials}
-                </span>
+              <div className="w-24 h-24 border border-[var(--gt-border)] flex items-center justify-center p-3 bg-white">
+                <Image
+                  src={c.logo}
+                  alt={c.name}
+                  width={80}
+                  height={80}
+                  className="object-contain w-full h-full"
+                />
               </div>
               <span className="text-xs text-[var(--gt-muted)] text-center max-w-[120px]">
                 {c.name}

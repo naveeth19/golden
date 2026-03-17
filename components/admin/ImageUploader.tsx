@@ -28,12 +28,12 @@ export default function ImageUploader({
       const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
       const { error } = await supabase.storage
-        .from("media")
+        .from("Media")
         .upload(path, file, { cacheControl: "3600", upsert: false });
 
       if (!error) {
         const { data: urlData } = supabase.storage
-          .from("media")
+          .from("Media")
           .getPublicUrl(path);
         if (urlData?.publicUrl) {
           newUrls.push(urlData.publicUrl);
@@ -51,9 +51,9 @@ export default function ImageUploader({
     const supabase = createClient();
 
     // Extract path from URL
-    const match = url.match(/media\/(.+)$/);
+    const match = url.match(/Media\/(.+)$/);
     if (match) {
-      await supabase.storage.from("media").remove([match[1]]);
+      await supabase.storage.from("Media").remove([match[1]]);
     }
 
     onChange(images.filter((_, i) => i !== index));

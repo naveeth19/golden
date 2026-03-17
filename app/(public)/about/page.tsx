@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import ClientLogos from "@/components/sections/ClientLogos";
 
 export const metadata: Metadata = {
@@ -74,14 +75,15 @@ export default function AboutPage() {
                 Kerala, Andhra Pradesh, and Goa.
               </p>
             </div>
-            <div className="bg-[var(--gt-navy)] h-[400px] flex items-center justify-center relative overflow-hidden">
-              <span
-                className="text-[120px] font-bold text-white/[0.03] select-none"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                1987
-              </span>
-              <div className="absolute bottom-6 right-6 bg-[var(--gt-red)] text-white text-xs font-semibold px-4 py-2 uppercase tracking-wider">
+            <div className="relative h-[400px] overflow-hidden">
+              <Image
+                src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/About_US_section.jpeg"
+                alt="Golden Travels Office"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+              <div className="absolute bottom-6 right-6 bg-[var(--gt-red)] text-white text-xs font-semibold px-4 py-2 uppercase tracking-wider z-10">
                 Est. 1987
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 const links = [
@@ -19,13 +20,13 @@ export default function Nav() {
       <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative w-10 h-10 flex items-center justify-center">
-            <div className="absolute inset-0 border-2 border-[var(--gt-red)] rounded-full" />
-            <div className="absolute inset-[3px] border border-[var(--gt-red)]/30 rounded-full" />
-            <span className="font-[var(--font-playfair)] text-[var(--gt-red)] text-lg font-bold" style={{ fontFamily: "var(--font-playfair)" }}>
-              G
-            </span>
-          </div>
+          <Image
+            src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+            alt="Golden Travels Logo"
+            width={48}
+            height={48}
+            className="w-12 h-12 object-contain"
+          />
           <div className="flex flex-col">
             <span className="text-[var(--gt-navy)] font-bold text-lg leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
               Golden Travels

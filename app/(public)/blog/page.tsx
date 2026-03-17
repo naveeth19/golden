@@ -3,6 +3,8 @@ import type { Blog } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import BlogCard from "@/components/blog/BlogCard";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Blog",
   description:

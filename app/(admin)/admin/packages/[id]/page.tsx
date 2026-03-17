@@ -8,6 +8,8 @@ import PackageForm from "@/components/admin/PackageForm";
 import ItineraryEditor from "@/components/admin/ItineraryEditor";
 import PricingTierEditor from "@/components/admin/PricingTierEditor";
 
+export const dynamic = 'force-dynamic';
+
 type Tab = "details" | "itinerary" | "pricing";
 
 export default function AdminPackageEditPage() {

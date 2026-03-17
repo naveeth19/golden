@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import PackageCard from "@/components/packages/PackageCard";
 import PackageFilter from "./PackageFilter";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Travel Packages",
   description:

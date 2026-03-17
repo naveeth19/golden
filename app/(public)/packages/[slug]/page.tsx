@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import PackageDetailClient from "@/components/packages/PackageDetailClient";
 import PackageCard from "@/components/packages/PackageCard";
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   return [];
 }

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import EnquiryBoard from "@/components/admin/EnquiryBoard";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminEnquiriesPage() {
   const [enquiries, setEnquiries] = useState<Record<string, unknown>[]>([]);
   const [view, setView] = useState<"kanban" | "table">("kanban");

@@ -6,6 +6,8 @@ import type { Fleet } from "@/lib/supabase/types";
 import FleetForm from "@/components/admin/FleetForm";
 import { useRouter } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminFleetPage() {
   const [fleet, setFleet] = useState<Fleet[]>([]);
   const [editing, setEditing] = useState<Fleet | null>(null);

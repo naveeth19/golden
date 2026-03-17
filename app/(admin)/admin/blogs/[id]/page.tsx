@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import type { Blog } from "@/lib/supabase/types";
 import BlogEditor from "@/components/admin/BlogEditor";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminBlogEditPage() {
   const params = useParams();
   const router = useRouter();

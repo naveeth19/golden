@@ -8,6 +8,8 @@ import PackagesGrid from "@/components/sections/PackagesGrid";
 import Testimonials from "@/components/sections/Testimonials";
 import CtaBanner from "@/components/sections/CtaBanner";
 
+export const dynamic = 'force-dynamic';
+
 const tickerItems = [
   "Outstation Rentals",
   "Airport Services",

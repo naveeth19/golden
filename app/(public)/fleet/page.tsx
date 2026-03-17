@@ -3,6 +3,8 @@ import type { Fleet } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import FleetCard from "@/components/fleet/FleetCard";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Our Fleet",
   description:

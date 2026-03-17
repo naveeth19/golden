@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import BlogContent from "@/components/blog/BlogContent";
 import BlogCard from "@/components/blog/BlogCard";
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   return [];
 }

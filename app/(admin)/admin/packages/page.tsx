@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import type { Package } from "@/lib/supabase/types";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminPackagesPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const supabase = createClient();

@@ -6,6 +6,8 @@ import type { Blog } from "@/lib/supabase/types";
 import Link from "next/link";
 import { format } from "date-fns";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const supabase = createClient();

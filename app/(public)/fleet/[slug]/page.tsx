@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { waLink } from "@/lib/wa";
 import FleetCard from "@/components/fleet/FleetCard";
 
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
   return [];
 }

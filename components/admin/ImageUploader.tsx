@@ -13,6 +13,7 @@ export default function ImageUploader({
   folder: string;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -20,6 +21,7 @@ export default function ImageUploader({
     if (!files || files.length === 0) return;
 
     setUploading(true);
+    setError(null);
     const supabase = createClient();
     const newUrls: string[] = [];
 
@@ -27,21 +29,30 @@ export default function ImageUploader({
       const ext = file.name.split(".").pop();
       const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-      const { error } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("Media")
         .upload(path, file, { cacheControl: "3600", upsert: false });
 
-      if (!error) {
-        const { data: urlData } = supabase.storage
-          .from("Media")
-          .getPublicUrl(path);
-        if (urlData?.publicUrl) {
-          newUrls.push(urlData.publicUrl);
-        }
+      if (uploadError) {
+        console.error("Image upload error:", uploadError);
+        setError(`Upload failed: ${uploadError.message}`);
+        setUploading(false);
+        if (fileRef.current) fileRef.current.value = "";
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("Media")
+        .getPublicUrl(path);
+
+      if (urlData?.publicUrl) {
+        newUrls.push(urlData.publicUrl);
       }
     }
 
-    onChange([...images, ...newUrls]);
+    if (newUrls.length > 0) {
+      onChange([...images, ...newUrls]);
+    }
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
   }
@@ -50,10 +61,12 @@ export default function ImageUploader({
     const url = images[index];
     const supabase = createClient();
 
-    // Extract path from URL
     const match = url.match(/Media\/(.+)$/);
     if (match) {
-      await supabase.storage.from("Media").remove([match[1]]);
+      const { error: removeError } = await supabase.storage.from("Media").remove([match[1]]);
+      if (removeError) {
+        console.error("Image remove error:", removeError);
+      }
     }
 
     onChange(images.filter((_, i) => i !== index));
@@ -87,9 +100,13 @@ export default function ImageUploader({
           multiple
           onChange={handleUpload}
           className="text-sm"
+          disabled={uploading}
         />
         {uploading && <span className="text-xs text-[var(--gt-muted)]">Uploading...</span>}
       </div>
+      {error && (
+        <p className="mt-2 text-xs text-red-600 font-medium">{error}</p>
+      )}
     </div>
   );
 }

@@ -29,6 +29,19 @@ export interface Package {
   youtube_urls: string[];
   is_featured: boolean;
   is_active: boolean;
+  pricing_type: "per_person" | "per_vehicle";
+  show_vehicle: boolean;
+  created_at: string;
+}
+
+export interface PricingTier {
+  id: string;
+  package_id: string;
+  min_people: number;
+  max_people: number;
+  vehicle_name: string | null;
+  price: number;
+  price_type: "per_person" | "per_vehicle";
   created_at: string;
 }
 

@@ -14,7 +14,7 @@ function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-function Toolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
+function Toolbar({ editor }: { editor: ReturnType<typeof useEditor> | null }) {
   if (!editor) return null;
 
   const btnClass = (active: boolean) =>
@@ -95,6 +95,7 @@ export default function BlogEditor({
       Placeholder.configure({ placeholder: "Start writing your blog post..." }),
     ],
     content: blog?.content || "",
+    immediatelyRender: false,
   });
 
   function handleTitleChange(val: string) {

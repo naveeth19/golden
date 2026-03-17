@@ -9,6 +9,19 @@ function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
+function extractVideoId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
 const packageTypes: PackageType[] = ["pilgrimage", "outstation", "airport", "corporate"];
 
 export default function PackageForm({
@@ -33,6 +46,8 @@ export default function PackageForm({
   const [exclusionInput, setExclusionInput] = useState("");
   const [isFeatured, setIsFeatured] = useState(pkg?.is_featured ?? false);
   const [isActive, setIsActive] = useState(pkg?.is_active ?? true);
+  const [showVehicle, setShowVehicle] = useState(pkg?.show_vehicle ?? true);
+  const [pricingType, setPricingType] = useState<"per_person" | "per_vehicle">(pkg?.pricing_type || "per_person");
   const [loading, setLoading] = useState(false);
 
   function handleTitleChange(val: string) {
@@ -51,9 +66,17 @@ export default function PackageForm({
   }
 
   function addYoutubeUrl() {
-    if (youtubeInput.trim()) {
-      setYoutubeUrls([...youtubeUrls, youtubeInput.trim()]);
+    const val = youtubeInput.trim();
+    if (val) {
+      setYoutubeUrls([...youtubeUrls, val]);
       setYoutubeInput("");
+    }
+  }
+
+  function handleYoutubeKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addYoutubeUrl();
     }
   }
 
@@ -66,6 +89,7 @@ export default function PackageForm({
       title, slug, type, duration_days: durationDays, price_from: priceFrom,
       overview, inclusions, exclusions, images, youtube_urls: youtubeUrls,
       is_featured: isFeatured, is_active: isActive,
+      show_vehicle: showVehicle, pricing_type: pricingType,
     };
 
     if (pkg) {
@@ -79,118 +103,153 @@ export default function PackageForm({
     }
   }
 
+  const inputCls = "w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]";
+  const labelCls = "block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl">
+    <form onSubmit={handleSubmit} className="space-y-5 max-w-3xl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Title</label>
-          <input type="text" required value={title} onChange={(e) => handleTitleChange(e.target.value)}
-            className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          <label className={labelCls}>Title</label>
+          <input type="text" required value={title} onChange={(e) => handleTitleChange(e.target.value)} className={inputCls} />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Slug</label>
-          <input type="text" required value={slug} onChange={(e) => setSlug(e.target.value)}
-            className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          <label className={labelCls}>Slug</label>
+          <input type="text" required value={slug} onChange={(e) => setSlug(e.target.value)} className={inputCls} />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Type</label>
-          <select value={type} onChange={(e) => setType(e.target.value as PackageType)}
-            className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]">
+          <label className={labelCls}>Type</label>
+          <select value={type} onChange={(e) => setType(e.target.value as PackageType)} className={inputCls}>
             {packageTypes.map((t) => (<option key={t} value={t} className="capitalize">{t}</option>))}
           </select>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Duration (Days)</label>
-          <input type="number" value={durationDays} onChange={(e) => setDurationDays(parseInt(e.target.value) || 0)}
-            className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          <label className={labelCls}>Duration (Days)</label>
+          <input type="number" value={durationDays} onChange={(e) => setDurationDays(parseInt(e.target.value) || 0)} className={inputCls} />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Price From (Rs.)</label>
-          <input type="number" value={priceFrom} onChange={(e) => setPriceFrom(parseInt(e.target.value) || 0)}
-            className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          <label className={labelCls}>Price From (Rs.)</label>
+          <input type="number" value={priceFrom} onChange={(e) => setPriceFrom(parseInt(e.target.value) || 0)} className={inputCls} />
+        </div>
+        <div>
+          <label className={labelCls}>Pricing Type</label>
+          <select value={pricingType} onChange={(e) => setPricingType(e.target.value as "per_person" | "per_vehicle")} className={inputCls}>
+            <option value="per_person">Per Person</option>
+            <option value="per_vehicle">Per Vehicle</option>
+          </select>
         </div>
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Overview</label>
-        <textarea rows={4} value={overview} onChange={(e) => setOverview(e.target.value)}
-          className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)] resize-none" />
+        <label className={labelCls}>Overview</label>
+        <textarea rows={6} value={overview} onChange={(e) => setOverview(e.target.value)}
+          className={`${inputCls} resize-none`} />
       </div>
 
       {/* Inclusions */}
       <div>
-        <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Inclusions</label>
+        <label className={labelCls}>Inclusions</label>
         <div className="flex flex-wrap gap-2 mb-2">
           {inclusions.map((item, i) => (
             <span key={i} onClick={() => setInclusions(inclusions.filter((_, j) => j !== i))}
-              className="text-xs px-2 py-1 bg-green-50 text-green-700 cursor-pointer hover:bg-red-50 hover:text-red-700">{item} x</span>
+              className="text-xs px-2 py-1 bg-green-50 text-green-700 cursor-pointer hover:bg-red-50 hover:text-red-700 transition-colors">
+              {item}
+              <span className="ml-1">x</span>
+            </span>
           ))}
         </div>
         <input type="text" value={inclusionInput} onChange={(e) => setInclusionInput(e.target.value)}
           onKeyDown={addTag(inclusions, setInclusions, inclusionInput, setInclusionInput)}
-          placeholder="Type and press Enter"
-          className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          placeholder="Type and press Enter" className={inputCls} />
       </div>
 
       {/* Exclusions */}
       <div>
-        <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Exclusions</label>
+        <label className={labelCls}>Exclusions</label>
         <div className="flex flex-wrap gap-2 mb-2">
           {exclusions.map((item, i) => (
             <span key={i} onClick={() => setExclusions(exclusions.filter((_, j) => j !== i))}
-              className="text-xs px-2 py-1 bg-red-50 text-red-700 cursor-pointer hover:bg-red-100">{item} x</span>
+              className="text-xs px-2 py-1 bg-red-50 text-red-700 cursor-pointer hover:bg-red-100 transition-colors">
+              {item}
+              <span className="ml-1">x</span>
+            </span>
           ))}
         </div>
         <input type="text" value={exclusionInput} onChange={(e) => setExclusionInput(e.target.value)}
           onKeyDown={addTag(exclusions, setExclusions, exclusionInput, setExclusionInput)}
-          placeholder="Type and press Enter"
-          className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          placeholder="Type and press Enter" className={inputCls} />
+      </div>
+
+      {/* Toggles */}
+      <div className="flex flex-wrap gap-6">
+        <Toggle label="Show Vehicle" value={showVehicle} onChange={setShowVehicle} />
+        <Toggle label="Featured" value={isFeatured} onChange={setIsFeatured} />
+        <Toggle label="Active" value={isActive} onChange={setIsActive} />
       </div>
 
       {/* Images */}
       <div>
-        <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">Images</label>
+        <label className={labelCls}>Images</label>
         <ImageUploader images={images} onChange={setImages} folder="packages" />
       </div>
 
       {/* YouTube URLs */}
       <div>
-        <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">YouTube URLs</label>
-        <div className="space-y-2 mb-2">
-          {youtubeUrls.map((url, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <span className="text-xs text-[var(--gt-muted)] flex-1 truncate">{url}</span>
-              <button type="button" onClick={() => setYoutubeUrls(youtubeUrls.filter((_, j) => j !== i))}
-                className="text-xs text-[var(--gt-red)]">Remove</button>
-            </div>
-          ))}
-        </div>
+        <label className={labelCls}>YouTube URLs</label>
+        {youtubeUrls.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+            {youtubeUrls.map((url, i) => {
+              const vid = extractVideoId(url);
+              return (
+                <div key={i} className="border border-[var(--gt-border)] overflow-hidden group relative">
+                  {vid ? (
+                    <img
+                      src={`https://img.youtube.com/vi/${vid}/hqdefault.jpg`}
+                      alt={`Video ${i + 1}`}
+                      className="w-full h-24 object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-24 bg-[var(--gt-cream)] flex items-center justify-center text-xs text-[var(--gt-muted)]">
+                      Invalid URL
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setYoutubeUrls(youtubeUrls.filter((_, j) => j !== i))}
+                    className="absolute top-1 right-1 w-5 h-5 bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
         <div className="flex gap-2">
-          <input type="url" value={youtubeInput} onChange={(e) => setYoutubeInput(e.target.value)}
-            placeholder="https://youtube.com/watch?v=..."
-            className="flex-1 border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]" />
+          <input
+            type="url"
+            value={youtubeInput}
+            onChange={(e) => setYoutubeInput(e.target.value)}
+            onKeyDown={handleYoutubeKeyDown}
+            onPaste={(e) => {
+              setTimeout(() => {
+                const val = (e.target as HTMLInputElement).value.trim();
+                if (val && extractVideoId(val)) {
+                  setYoutubeUrls([...youtubeUrls, val]);
+                  setYoutubeInput("");
+                }
+              }, 0);
+            }}
+            placeholder="Paste YouTube link"
+            className={`flex-1 ${inputCls}`}
+          />
           <button type="button" onClick={addYoutubeUrl}
-            className="border border-[var(--gt-border)] px-4 py-2 text-xs font-semibold text-[var(--gt-navy)] hover:bg-[var(--gt-cream)]">
+            className="border border-[var(--gt-border)] px-4 py-2 text-xs font-semibold text-[var(--gt-navy)] hover:bg-[var(--gt-cream)] transition-colors">
             Add
           </button>
-        </div>
-      </div>
-
-      {/* Toggles */}
-      <div className="flex gap-6">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setIsFeatured(!isFeatured)}
-            className={`w-10 h-5 rounded-full relative transition-colors ${isFeatured ? "bg-[var(--gt-red)]" : "bg-gray-300"}`}>
-            <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isFeatured ? "left-5" : "left-0.5"}`} />
-          </button>
-          <span className="text-sm text-[var(--gt-navy)]">Featured</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setIsActive(!isActive)}
-            className={`w-10 h-5 rounded-full relative transition-colors ${isActive ? "bg-[var(--gt-red)]" : "bg-gray-300"}`}>
-            <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isActive ? "left-5" : "left-0.5"}`} />
-          </button>
-          <span className="text-sm text-[var(--gt-navy)]">Active</span>
         </div>
       </div>
 
@@ -199,5 +258,28 @@ export default function PackageForm({
         {loading ? "Saving..." : "Save Package"}
       </button>
     </form>
+  );
+}
+
+function Toggle({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        className={`w-10 h-5 rounded-full relative transition-colors ${value ? "bg-[var(--gt-red)]" : "bg-gray-300"}`}
+      >
+        <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${value ? "left-5" : "left-0.5"}`} />
+      </button>
+      <span className="text-sm text-[var(--gt-navy)]">{label}</span>
+    </div>
   );
 }

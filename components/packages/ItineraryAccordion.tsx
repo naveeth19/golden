@@ -12,11 +12,11 @@ export default function ItineraryAccordion({ days }: { days: ItineraryDay[] }) {
         <div key={day.id} className="border border-[var(--gt-border)]">
           <button
             onClick={() => setOpenDay(openDay === day.id ? null : day.id)}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-[var(--gt-cream)] transition-colors"
+            className="w-full flex items-center justify-between p-4 text-left hover:bg-[var(--gt-cream)] transition-colors duration-200"
           >
             <div className="flex items-center gap-4">
-              <span className="text-[var(--gt-red)] text-sm font-bold min-w-[60px]">
-                Day {day.day_number}
+              <span className="w-10 h-10 bg-[var(--gt-red)] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                {day.day_number}
               </span>
               <span className="text-sm font-semibold text-[var(--gt-navy)]">
                 {day.title}
@@ -31,7 +31,7 @@ export default function ItineraryAccordion({ days }: { days: ItineraryDay[] }) {
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${openDay === day.id ? "rotate-180" : ""}`}
+              className={`transition-transform duration-200 flex-shrink-0 ${openDay === day.id ? "rotate-180" : ""}`}
             >
               <polyline points="6 9 12 15 18 9" />
             </svg>
@@ -39,20 +39,20 @@ export default function ItineraryAccordion({ days }: { days: ItineraryDay[] }) {
           {openDay === day.id && (
             <div className="px-4 pb-4 border-t border-[var(--gt-border)]">
               <div className="pt-4">
-                <p className="text-sm text-[var(--gt-muted)] leading-relaxed mb-3">
+                <p className="text-sm text-[var(--gt-muted)] leading-relaxed mb-4 whitespace-pre-line">
                   {day.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {(day.meals || []).map((meal) => (
                     <span
                       key={meal}
-                      className="text-[10px] px-2 py-1 bg-[var(--gt-cream)] text-[var(--gt-navy)] font-medium"
+                      className="text-[10px] px-2.5 py-1 border border-[var(--gt-red)] text-[var(--gt-red)] font-medium"
                     >
                       {meal}
                     </span>
                   ))}
                   {day.overnight_at && (
-                    <span className="text-[10px] px-2 py-1 bg-[var(--gt-navy)] text-white font-medium">
+                    <span className="text-[10px] px-2.5 py-1 border border-[var(--gt-navy)] text-[var(--gt-navy)] font-medium">
                       Overnight: {day.overnight_at}
                     </span>
                   )}

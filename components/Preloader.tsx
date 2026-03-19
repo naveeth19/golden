@@ -165,15 +165,61 @@ export default function Preloader() {
       </div>
 
       {/* GT Word Art */}
-      <div style={{display:"flex",alignItems:"center",marginBottom:24}}>
-        <div className="gt-rule-line" style={{width:48,marginRight:16}}/>
-        <div className="gt-dot-el" style={{marginRight:8}}/>
-        <div style={{position:"relative"}}>
-          <div className="gt-outline">GT</div>
-          <div className="gt-fill">GT</div>
-        </div>
-        <div className="gt-dot-el" style={{marginLeft:8}}/>
-        <div className="gt-rule-line" style={{width:48,marginLeft:16}}/>
+      <div style={{position:"relative", lineHeight:1}}>
+        <svg 
+          viewBox="0 0 220 120" 
+          width="220" 
+          height="120" 
+          style={{overflow:"visible", display:"block"}}
+        >
+          <defs>
+            <linearGradient id="gtGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#9B1530"/>
+              <stop offset="40%" stopColor="#C41E3A"/>
+              <stop offset="60%" stopColor="#E8274D"/>
+              <stop offset="100%" stopColor="#9B1530"/>
+            </linearGradient>
+            <clipPath id="gtClip">
+              <rect x="0" y="0" width="220" height="0">
+                <animate 
+                  attributeName="height" 
+                  from="0" to="120" 
+                  dur="1.4s" 
+                  begin="0.3s" 
+                  fill="freeze"
+                  calcMode="spline"
+                  keySplines="0.77 0 0.18 1"
+                />
+              </rect>
+            </clipPath>
+          </defs>
+          
+          {/* Outline layer */}
+          <text
+            x="110" y="100"
+            textAnchor="middle"
+            fontFamily="var(--font-playfair), Georgia, serif"
+            fontSize="110"
+            fontWeight="900"
+            fill="none"
+            stroke="rgba(196,30,58,0.2)"
+            strokeWidth="0.8"
+            letterSpacing="-4"
+            style={{animation: "gt-reveal 1.2s ease both"}}
+          >GT</text>
+          
+          {/* Fill layer — clips upward */}
+          <text
+            x="110" y="100"
+            textAnchor="middle"
+            fontFamily="var(--font-playfair), Georgia, serif"
+            fontSize="110"
+            fontWeight="900"
+            fill="url(#gtGrad)"
+            letterSpacing="-4"
+            clipPath="url(#gtClip)"
+          >GT</text>
+        </svg>
       </div>
 
       <div className="gt-brand">Golden Travels</div>

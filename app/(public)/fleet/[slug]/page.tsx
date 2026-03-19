@@ -132,6 +132,139 @@ export default async function VehicleDetailPage({
                 {v.description || `The ${v.name} is a premium ${v.category} vehicle available for rent in Bengaluru. With a seating capacity of ${v.capacity} passengers, it is ideal for both short city rides and long outstation trips. All our vehicles are well-maintained, regularly serviced, and driven by experienced professionals.`}
               </p>
 
+              {/* Pricing */}
+              <div className="mt-12">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-xs font-bold text-[var(--gt-red)] uppercase tracking-wider">Transparent Rates</span>
+                  <div className="h-px bg-[var(--gt-border)] flex-1" />
+                </div>
+                <h2
+                  className="text-2xl font-bold text-[var(--gt-navy)] mb-6"
+                  style={{ fontFamily: "var(--font-playfair)" }}
+                >
+                  Pricing
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Local Card */}
+                  <div className="bg-white border border-[var(--gt-border)] p-6 border-l-4 border-l-[var(--gt-red)]">
+                    <h3
+                      className="text-lg font-bold text-[var(--gt-navy)] mb-4"
+                      style={{ fontFamily: "var(--font-playfair)" }}
+                    >
+                      Local Package
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">8 Hrs / 80 Km</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_local_8hr.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">Extra km</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_extra_km.toLocaleString("en-IN")} / km
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">Extra hour</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_extra_hour.toLocaleString("en-IN")} / hr
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Outstation Card */}
+                  <div className="bg-white border border-[var(--gt-border)] p-6 border-l-4 border-l-[var(--gt-red)]">
+                    <h3
+                      className="text-lg font-bold text-[var(--gt-navy)] mb-4"
+                      style={{ fontFamily: "var(--font-playfair)" }}
+                    >
+                      Outstation
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">Per day</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_outstation_day.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">Per km</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_outstation_km.toLocaleString("en-IN")} / km
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-[var(--gt-muted)] mt-3">
+                      Minimum 300 km per day applies
+                    </p>
+                  </div>
+
+                  {/* Airport Card */}
+                  <div className="bg-white border border-[var(--gt-border)] p-6 border-l-4 border-l-[var(--gt-red)]">
+                    <h3
+                      className="text-lg font-bold text-[var(--gt-navy)] mb-4"
+                      style={{ fontFamily: "var(--font-playfair)" }}
+                    >
+                      Airport Transfer
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">Flat rate</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_airport.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-[var(--gt-muted)] mt-3">
+                      One way · BLR Airport
+                    </p>
+                  </div>
+                </div>
+
+                {/* Note Box */}
+                <div className="mt-8 border-l-4 border-l-[var(--gt-red)] bg-[var(--gt-cream)] p-4">
+                  <p className="text-sm text-[var(--gt-muted)]">
+                    Prices are indicative. Final quote depends on trip duration, distance, and toll charges. Contact us for a confirmed rate.
+                  </p>
+                </div>
+
+                {/* WhatsApp CTA */}
+                <div className="mt-6">
+                  <a
+                    href={waLink(`Hi, I'd like to know the rate for ${v.name}`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 bg-[var(--gt-red)] text-white text-[11px] uppercase tracking-[0.15em] font-semibold px-6 py-3 hover:bg-[var(--gt-red-dark)] transition-colors"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                    </svg>
+                    Get Exact Quote
+                  </a>
+                </div>
+              </div>
+
               {/* Gallery */}
               {v.images && v.images.length > 1 && (
                 <div className="mt-8">

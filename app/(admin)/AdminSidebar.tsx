@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const navItems = [
   {
@@ -78,9 +79,13 @@ export default function AdminSidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="relative w-8 h-8 flex items-center justify-center">
-            <div className="absolute inset-0 border-2 border-[var(--gt-red)] rounded-full" />
-            <span className="text-[var(--gt-red)] text-sm font-bold" style={{ fontFamily: "var(--font-playfair)" }}>G</span>
+          <div style={{ height: '44px', width: 'auto', position: 'relative' }}>
+            <Image
+              src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+              alt="Golden Travels Logo"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
           </div>
           <div>
             <span className="text-white font-bold text-sm block" style={{ fontFamily: "var(--font-playfair)" }}>Golden Travels</span>

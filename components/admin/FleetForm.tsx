@@ -32,6 +32,12 @@ export default function FleetForm({
   const [description, setDescription] = useState(vehicle?.description || "");
   const [images, setImages] = useState<string[]>(vehicle?.images || []);
   const [isActive, setIsActive] = useState(vehicle?.is_active ?? true);
+  const [priceLocal8hr, setPriceLocal8hr] = useState(vehicle?.price_local_8hr || 0);
+  const [priceExtraKm, setPriceExtraKm] = useState(vehicle?.price_extra_km || 0);
+  const [priceExtraHour, setPriceExtraHour] = useState(vehicle?.price_extra_hour || 0);
+  const [priceOutstationDay, setPriceOutstationDay] = useState(vehicle?.price_outstation_day || 0);
+  const [priceOutstationKm, setPriceOutstationKm] = useState(vehicle?.price_outstation_km || 0);
+  const [priceAirport, setPriceAirport] = useState(vehicle?.price_airport || 0);
   const [loading, setLoading] = useState(false);
 
   function handleNameChange(val: string) {
@@ -64,6 +70,12 @@ export default function FleetForm({
       features,
       description,
       images,
+      price_local_8hr: priceLocal8hr,
+      price_extra_km: priceExtraKm,
+      price_extra_hour: priceExtraHour,
+      price_outstation_day: priceOutstationDay,
+      price_outstation_km: priceOutstationKm,
+      price_airport: priceAirport,
       is_active: isActive,
     };
 
@@ -168,6 +180,80 @@ export default function FleetForm({
           onChange={setImages}
           folder="fleet"
         />
+      </div>
+
+      <div>
+        <h4 className="text-sm font-bold text-[var(--gt-navy)] mb-4" style={{ fontFamily: "var(--font-playfair)" }}>
+          Pricing Slab
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ Base rate</label>
+            <input
+              type="number"
+              min={0}
+              value={priceLocal8hr}
+              onChange={(e) => setPriceLocal8hr(parseFloat(e.target.value) || 0)}
+              className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
+              placeholder="8 Hr / 80 Km Local Package"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ per km</label>
+            <input
+              type="number"
+              min={0}
+              value={priceExtraKm}
+              onChange={(e) => setPriceExtraKm(parseFloat(e.target.value) || 0)}
+              className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
+              placeholder="Extra km rate"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ per hour</label>
+            <input
+              type="number"
+              min={0}
+              value={priceExtraHour}
+              onChange={(e) => setPriceExtraHour(parseFloat(e.target.value) || 0)}
+              className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
+              placeholder="Extra hour rate"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ per day</label>
+            <input
+              type="number"
+              min={0}
+              value={priceOutstationDay}
+              onChange={(e) => setPriceOutstationDay(parseFloat(e.target.value) || 0)}
+              className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
+              placeholder="Outstation per day"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ per km</label>
+            <input
+              type="number"
+              min={0}
+              value={priceOutstationKm}
+              onChange={(e) => setPriceOutstationKm(parseFloat(e.target.value) || 0)}
+              className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
+              placeholder="Outstation per km"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ flat rate</label>
+            <input
+              type="number"
+              min={0}
+              value={priceAirport}
+              onChange={(e) => setPriceAirport(parseFloat(e.target.value) || 0)}
+              className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
+              placeholder="Airport transfer flat rate"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

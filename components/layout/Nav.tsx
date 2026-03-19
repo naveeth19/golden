@@ -16,17 +16,26 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-[70px] bg-white border-b border-[var(--gt-border)]">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] md:h-[72px] bg-white border-b border-[var(--gt-border)]">
       <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
-            alt="Golden Travels Logo"
-            width={48}
-            height={48}
-            className="w-12 h-12 object-contain"
-          />
+          <div style={{ height: '44px', width: 'auto', position: 'relative' }} className="md:hidden">
+            <Image
+              src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+              alt="Golden Travels Logo"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
+          <div style={{ height: '52px', width: 'auto', position: 'relative' }} className="hidden md:block">
+            <Image
+              src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+              alt="Golden Travels Logo"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
           <div className="flex flex-col">
             <span className="text-[var(--gt-navy)] font-bold text-lg leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
               Golden Travels

@@ -1,13 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Package } from "@/lib/supabase/types";
 import Link from "next/link";
+import Image from "next/image";
 import { waLink } from "@/lib/wa";
 
 const typeColors: Record<string, string> = {
-  pilgrimage: "bg-[#4A1520]",
-  outstation: "bg-[#1A3A2A]",
-  airport: "bg-[#1A2A4A]",
-  corporate: "bg-[var(--gt-navy-dark)]",
+  pilgrimage: "linear-gradient(135deg, #1a0c0e, #3a1020)",
+  outstation: "linear-gradient(135deg, #0c1a10, #163a20)",
+  airport: "linear-gradient(135deg, #0c0e1a, #151a3a)",
+  corporate: "linear-gradient(135deg, #1a1812, #2d2820)",
 };
 
 export default async function PackagesGrid() {
@@ -39,16 +40,31 @@ export default async function PackagesGrid() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pkgs.map((pkg) => (
               <div key={pkg.id} className="border border-[var(--gt-border)] overflow-hidden group">
-                <div className={`${typeColors[pkg.type] || "bg-[var(--gt-navy)]"} p-6 min-h-[160px] flex flex-col justify-end`}>
-                  <span className="text-[10px] uppercase tracking-wider text-white/60 font-semibold mb-2 inline-block">
-                    {pkg.type}
-                  </span>
-                  <h3 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-                    {pkg.title}
-                  </h3>
-                  {pkg.duration_days > 0 && (
-                    <p className="text-xs text-white/50 mt-1">{pkg.duration_days} Days</p>
+                <div className="relative min-h-[160px]">
+                  {pkg.cover_image ? (
+                    <>
+                      <Image
+                        src={pkg.cover_image}
+                        alt={pkg.title}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                    </>
+                  ) : (
+                    <div className={`${typeColors[pkg.type] || "bg-[var(--gt-navy)]"} absolute inset-0`} />
                   )}
+                  <div className="relative p-6 flex flex-col justify-end h-full">
+                    <span className="text-[10px] uppercase tracking-wider text-white/60 font-semibold mb-2 inline-block">
+                      {pkg.type}
+                    </span>
+                    <h3 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-playfair)" }}>
+                      {pkg.title}
+                    </h3>
+                    {pkg.duration_days > 0 && (
+                      <p className="text-xs text-white/50 mt-1">{pkg.duration_days} Days</p>
+                    )}
+                  </div>
                 </div>
                 <div className="p-6">
                   <p className="text-sm text-[var(--gt-muted)] line-clamp-2 mb-4">

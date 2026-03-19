@@ -4,6 +4,13 @@ import { useState } from "react";
 import Image from "next/image";
 import type { Package } from "@/lib/supabase/types";
 
+const typeColors: Record<string, string> = {
+  pilgrimage: "linear-gradient(135deg, #1a0c0e, #3a1020)",
+  outstation: "linear-gradient(135deg, #0c1a10, #163a20)",
+  airport: "linear-gradient(135deg, #0c0e1a, #151a3a)",
+  corporate: "linear-gradient(135deg, #1a1812, #2d2820)",
+};
+
 export default function HeroSection({
   pkg,
   heroVideoId,
@@ -30,21 +37,33 @@ export default function HeroSection({
             allow="autoplay; encrypted-media"
             style={{ transform: "scale(1.2)" }}
           />
+        ) : pkg.cover_image ? (
+          <>
+            <Image
+              src={pkg.cover_image}
+              alt={pkg.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/55" />
+          </>
         ) : hasImage ? (
-          <Image
-            src={pkg.images[0]}
-            alt={pkg.title}
-            fill
-            className="object-cover"
-            priority
-            sizes="100vw"
-          />
+          <>
+            <Image
+              src={pkg.images[0]}
+              alt={pkg.title}
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </>
         ) : (
-          <div className="absolute inset-0 bg-[var(--gt-navy)]" />
+          <div className={`absolute inset-0 ${typeColors[pkg.type] || "bg-[var(--gt-navy)]"}`} />
         )}
-
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/50" />
 
         {/* Content */}
         <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex items-end pb-12">

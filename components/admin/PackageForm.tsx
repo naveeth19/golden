@@ -44,6 +44,7 @@ export default function PackageForm({
   const [youtubeInput, setYoutubeInput] = useState("");
   const [inclusionInput, setInclusionInput] = useState("");
   const [exclusionInput, setExclusionInput] = useState("");
+  const [coverImage, setCoverImage] = useState<string | null>(pkg?.cover_image || null);
   const [isFeatured, setIsFeatured] = useState(pkg?.is_featured ?? false);
   const [isActive, setIsActive] = useState(pkg?.is_active ?? true);
   const [showVehicle, setShowVehicle] = useState(pkg?.show_vehicle ?? true);
@@ -88,7 +89,7 @@ export default function PackageForm({
     const payload = {
       title, slug, type, duration_days: durationDays, price_from: priceFrom,
       overview, inclusions, exclusions, images, youtube_urls: youtubeUrls,
-      is_featured: isFeatured, is_active: isActive,
+      cover_image: coverImage, is_featured: isFeatured, is_active: isActive,
       show_vehicle: showVehicle, pricing_type: pricingType,
     };
 
@@ -119,6 +120,44 @@ export default function PackageForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 max-w-3xl">
+      {/* Cover Image */}
+      <div>
+        <h4 className="text-sm font-bold text-[var(--gt-navy)] mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
+          Cover Image
+        </h4>
+        <p className="text-xs text-[var(--gt-muted)] mb-3">
+          This image appears on package cards and the packages listing page. Recommended: 1200x800px
+        </p>
+        
+        {/* Cover Image Preview */}
+        {coverImage && (
+          <div className="relative w-full h-[200px] mb-4 rounded-lg overflow-hidden border border-[var(--gt-border)]">
+            <img
+              src={coverImage}
+              alt="Cover image preview"
+              className="w-full h-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => setCoverImage(null)}
+              className="absolute top-2 right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        )}
+        
+        {/* Cover Image Upload */}
+        <ImageUploader
+          images={coverImage ? [coverImage] : []}
+          onChange={(urls) => setCoverImage(urls[0] || null)}
+          folder="packages/covers"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className={labelCls}>Title</label>

@@ -33,6 +33,7 @@ export interface Package {
   exclusions: string[];
   images: string[];
   youtube_urls: string[];
+  cover_image: string | null;
   is_featured: boolean;
   is_active: boolean;
   pricing_type: "per_person" | "per_vehicle";

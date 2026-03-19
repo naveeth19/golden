@@ -12,8 +12,8 @@ export interface Fleet {
   price_local_8hr: number;
   price_extra_km: number;
   price_extra_hour: number;
-  price_outstation_day: number;
   price_outstation_km: number;
+  price_driver_batta: number;
   price_airport: number;
   is_active: boolean;
   created_at: string;

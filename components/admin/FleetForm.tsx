@@ -35,8 +35,8 @@ export default function FleetForm({
   const [priceLocal8hr, setPriceLocal8hr] = useState(vehicle?.price_local_8hr || 0);
   const [priceExtraKm, setPriceExtraKm] = useState(vehicle?.price_extra_km || 0);
   const [priceExtraHour, setPriceExtraHour] = useState(vehicle?.price_extra_hour || 0);
-  const [priceOutstationDay, setPriceOutstationDay] = useState(vehicle?.price_outstation_day || 0);
   const [priceOutstationKm, setPriceOutstationKm] = useState(vehicle?.price_outstation_km || 0);
+  const [priceDriverBatta, setPriceDriverBatta] = useState(vehicle?.price_driver_batta || 0);
   const [priceAirport, setPriceAirport] = useState(vehicle?.price_airport || 0);
   const [loading, setLoading] = useState(false);
 
@@ -73,8 +73,8 @@ export default function FleetForm({
       price_local_8hr: priceLocal8hr,
       price_extra_km: priceExtraKm,
       price_extra_hour: priceExtraHour,
-      price_outstation_day: priceOutstationDay,
       price_outstation_km: priceOutstationKm,
+      price_driver_batta: priceDriverBatta,
       price_airport: priceAirport,
       is_active: isActive,
     };
@@ -221,14 +221,14 @@ export default function FleetForm({
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ per day</label>
+            <label className="block text-xs font-semibold text-[var(--gt-navy)] uppercase tracking-wider mb-1">₹ per day (driver batta)</label>
             <input
               type="number"
               min={0}
-              value={priceOutstationDay}
-              onChange={(e) => setPriceOutstationDay(parseFloat(e.target.value) || 0)}
+              value={priceDriverBatta}
+              onChange={(e) => setPriceDriverBatta(parseFloat(e.target.value) || 0)}
               className="w-full border border-[var(--gt-border)] px-3 py-2 text-sm focus:outline-none focus:border-[var(--gt-red)]"
-              placeholder="Outstation per day"
+              placeholder="Driver batta per day"
             />
           </div>
           <div>

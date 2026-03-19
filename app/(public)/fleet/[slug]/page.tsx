@@ -194,15 +194,6 @@ export default async function VehicleDetailPage({
                     </h3>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">Per day</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_outstation_day.toLocaleString("en-IN")}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
                         <span className="text-sm text-[var(--gt-muted)]">Per km</span>
                         <span
                           className="text-lg font-bold text-[var(--gt-navy)]"
@@ -211,9 +202,18 @@ export default async function VehicleDetailPage({
                           ₹{v.price_outstation_km.toLocaleString("en-IN")} / km
                         </span>
                       </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[var(--gt-muted)]">Driver Batta</span>
+                        <span
+                          className="text-lg font-bold text-[var(--gt-navy)]"
+                          style={{ fontFamily: "var(--font-playfair)" }}
+                        >
+                          ₹{v.price_driver_batta.toLocaleString("en-IN")} / day
+                        </span>
+                      </div>
                     </div>
                     <p className="text-xs text-[var(--gt-muted)] mt-3">
-                      Minimum 300 km per day applies
+                      Minimum 300 km per trip applies
                     </p>
                   </div>
 
@@ -242,9 +242,26 @@ export default async function VehicleDetailPage({
                   </div>
                 </div>
 
-                {/* Note Box */}
-                <div className="mt-8 border-l-4 border-l-[var(--gt-red)] bg-[var(--gt-cream)] p-4">
-                  <p className="text-sm text-[var(--gt-muted)]">
+                {/* Additional Charges Box */}
+                <div className="mt-8 bg-white border border-[var(--gt-border)] border-l-4 border-l-[var(--gt-red)] p-5">
+                  <h4 className="text-[11px] uppercase text-[var(--gt-red)] font-bold tracking-[0.14em] mb-2.5">
+                    Additional Charges
+                  </h4>
+                  <div className="space-y-2 text-[13px] text-[var(--gt-muted)] leading-[1.8]" style={{ fontFamily: "DM Sans, sans-serif" }}>
+                    <div className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">■</span>
+                      <span>Toll & parking charges extra at actuals</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5">■</span>
+                      <span>Night / early morning batta applicable for driving between 10:00 PM – 7:00 AM</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Indicative Prices Box */}
+                <div className="mt-4 bg-white border border-[var(--gt-border)] border-l-4 border-l-[var(--gt-red)] p-5">
+                  <p className="text-[13px] text-[var(--gt-muted)] leading-[1.8]" style={{ fontFamily: "DM Sans, sans-serif" }}>
                     Prices are indicative. Final quote depends on trip duration, distance, and toll charges. Contact us for a confirmed rate.
                   </p>
                 </div>

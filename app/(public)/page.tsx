@@ -5,6 +5,7 @@ import WhyUsSection from "@/components/sections/WhyUsSection";
 import ClientLogos from "@/components/sections/ClientLogos";
 import FleetScroll from "@/components/sections/FleetScroll";
 import PackagesGrid from "@/components/sections/PackagesGrid";
+import ProjectsTeaser from "@/components/sections/ProjectsTeaser";
 import Testimonials from "@/components/sections/Testimonials";
 import CtaBanner from "@/components/sections/CtaBanner";
 
@@ -43,6 +44,7 @@ export default function HomePage() {
       <ClientLogos />
       <FleetScroll />
       <PackagesGrid />
+      <ProjectsTeaser />
       <Testimonials />
       <CtaBanner />
     </>

@@ -7,6 +7,7 @@ import { useState } from "react";
 const links = [
   { href: "/fleet", label: "Fleet" },
   { href: "/packages", label: "Packages" },
+  { href: "/projects", label: "Projects" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -20,22 +21,22 @@ export default function Nav() {
       <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div style={{ height: '44px', width: 'auto', position: 'relative' }} className="md:hidden">
-            <Image
-              src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
-              alt="Golden Travels Logo"
-              fill
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-          <div style={{ height: '52px', width: 'auto', position: 'relative' }} className="hidden md:block">
-            <Image
-              src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
-              alt="Golden Travels Logo"
-              fill
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
+          <Image
+            src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+            alt="Golden Travels Logo"
+            width={44}
+            height={44}
+            className="md:hidden"
+            style={{ objectFit: 'contain', width: 'auto', height: '44px' }}
+          />
+          <Image
+            src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
+            alt="Golden Travels Logo"
+            width={52}
+            height={52}
+            className="hidden md:block"
+            style={{ objectFit: 'contain', width: 'auto', height: '52px' }}
+          />
           <div className="flex flex-col">
             <span className="text-[var(--gt-navy)] font-bold text-lg leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>
               Golden Travels

@@ -16,10 +16,13 @@ export default function Preloader() {
       setTimeout(() => {
         setHidden(true);
         sessionStorage.setItem("gt-loaded", "1");
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = "";
       }, 600);
     }, 3200);
-    return () => clearTimeout(hideTimer);
+    return () => {
+      clearTimeout(hideTimer);
+      document.body.style.overflow = "";
+    };
   }, []);
 
   if (hidden) return null;

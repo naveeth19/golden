@@ -22,8 +22,8 @@ export default function Footer() {
             <div className="text-sm text-white/50 space-y-2">
               <p>No.1697/36, Dr Rajkumar Rd,<br />Rajajinagar, Bengaluru 560021</p>
               <p>
-                <a href="tel:+919845033877" className="hover:text-[var(--gt-red)] transition-colors">
-                  +91 98450 33877
+                <a href="tel:+919902933877" className="hover:text-[var(--gt-red)] transition-colors">
+                  +91 99029 33877
                 </a>
               </p>
               <p>

@@ -38,6 +38,7 @@ const projects = [
     status: "upcoming" as const,
     badge: "Upcoming",
     collab: "Golden Travels × Epic Road Trips",
+    disabled: true,
   },
 ];
 
@@ -67,7 +68,7 @@ export default function ProjectsPage() {
 
       {/* Projects List */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {projects.map((project) => (
+        {projects.filter((p) => !p.disabled).map((project) => (
           <Link
             key={project.slug}
             href={`/projects/${project.slug}`}

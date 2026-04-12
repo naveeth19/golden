@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>South Africa Season 2 — Golden Travels</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A84C;--gold-light:#E8C96E;--gold-dim:#8B6F32;
+  --navy:#0D1B2A;--navy-mid:#1A2E42;--navy-light:#243447;
+  --cream:#F5F0E8;--cream-dim:#D4C9B0;--white:#FFFFFF;--muted:#9BA8B5;
+}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden}
+
+/* STRIP */
+.strip{background:var(--navy-mid);border-bottom:1px solid rgba(201,168,76,0.25);color:var(--gold);padding:0.7rem 1rem;text-align:center;font-size:0.6rem;font-weight:400;letter-spacing:0.22em;text-transform:uppercase}
+.strip strong{color:var(--white);font-weight:500}
+
+/* ── HERO ── */
+.hero{position:relative;width:100%;height:100svh;min-height:580px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:3.5rem;background:var(--navy)}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;opacity:0;transition:opacity 0.9s ease}
+.hero-video.loaded{opacity:1}
+.hero-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(13,27,42,0.55) 0%,rgba(13,27,42,0.08) 30%,rgba(13,27,42,0.72) 68%,rgba(13,27,42,0.97) 100%)}
+.hero-content{position:relative;z-index:3;text-align:center;padding:0 1.25rem;width:100%}
+
+/* GT HERO BADGE */
+.gt-hero-badge{display:inline-flex;flex-direction:column;align-items:center;margin-bottom:1.6rem;position:relative}
+.gt-hero-badge::before{content:'';position:absolute;inset:-10px -16px;border:1px solid rgba(201,168,76,0.35)}
+.gt-hero-badge::after{content:'';position:absolute;inset:-5px -10px;border:1px solid rgba(201,168,76,0.15)}
+.gt-hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:600;color:var(--gold);letter-spacing:0.22em;line-height:1}
+.gt-hero-tag{font-size:0.52rem;letter-spacing:0.32em;color:var(--cream-dim);text-transform:uppercase;margin-top:0.3rem}
+.gt-hero-est{font-size:0.48rem;letter-spacing:0.22em;color:var(--gold-dim);text-transform:uppercase;margin-top:0.12rem}
+
+/* collab line */
+.collab-line{display:flex;align-items:center;justify-content:center;gap:0.8rem;margin-bottom:1.8rem;flex-wrap:wrap}
+.collab-text{font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.ert-pill{display:inline-flex;flex-direction:column;align-items:center;background:#3B2FBE;padding:0.38rem 0.75rem;border-radius:3px}
+.ert-mark{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:500;color:#F5C842;letter-spacing:0.04em;line-height:1}
+.ert-sub{font-size:0.4rem;letter-spacing:0.2em;color:rgba(255,255,255,0.65);text-transform:uppercase;margin-top:0.1rem}
+
+.hero-eyebrow{font-size:0.58rem;letter-spacing:0.38em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.8rem,15vw,6.8rem);font-weight:300;line-height:0.9;color:var(--white);margin-bottom:0.5rem}
+.hero-title em{font-style:italic;color:var(--gold-light)}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(0.9rem,2.2vw,1.15rem);font-style:italic;color:var(--cream-dim);margin-bottom:1.5rem}
+.pill{display:inline-flex;align-items:center;gap:0.45rem;border:1px solid rgba(201,168,76,0.45);padding:0.5rem 1.3rem;font-size:0.68rem;letter-spacing:0.13em;color:var(--gold-light);margin-bottom:1.8rem}
+.pill .sep{color:var(--gold-dim)}
+.cta-row{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-block;font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;padding:0.85rem 1.8rem;cursor:pointer;border:none;text-decoration:none;transition:all 0.2s}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-light)}
+.btn-ol{background:transparent;color:var(--gold);border:1px solid rgba(201,168,76,0.55)}.btn-ol:hover{background:rgba(201,168,76,0.08)}
+
+.scroll-hint{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);z-index:3;opacity:0.4;display:flex;flex-direction:column;align-items:center}
+.scroll-line{width:1px;height:34px;background:linear-gradient(to bottom,var(--gold),transparent);animation:sp 2s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:0.3;transform:scaleY(0.6)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ── GT TRUST BAR ── */
+.trust-bar{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border-top:1px solid rgba(201,168,76,0.2);border-bottom:1px solid rgba(201,168,76,0.2);padding:2rem 1.25rem}
+.trust-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:rgba(201,168,76,0.1)}
+.trust-item{background:var(--navy-mid);padding:1.4rem 1.2rem;text-align:center}
+.trust-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--gold);line-height:1;margin-bottom:0.2rem}
+.trust-label{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cream-dim)}
+
+/* ── VIDEO BAND ── */
+.vband{position:relative;width:100%;overflow:hidden;background:var(--navy-mid)}
+.vband-tall{height:90vw;max-height:620px;min-height:320px}
+.vband-mid{height:70vw;max-height:520px;min-height:280px}
+.vband video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity 0.9s ease}
+.vband video.loaded{opacity:1}
+.ov-left{position:absolute;inset:0;background:linear-gradient(to right,rgba(13,27,42,0.88) 0%,rgba(13,27,42,0.45) 45%,rgba(13,27,42,0.08) 100%)}
+.ov-right{position:absolute;inset:0;background:linear-gradient(to left,rgba(13,27,42,0.88) 0%,rgba(13,27,42,0.45) 45%,rgba(13,27,42,0.08) 100%)}
+.ov-bottom{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,27,42,0.15) 0%,rgba(13,27,42,0.55) 55%,rgba(13,27,42,0.96) 100%)}
+.vcontent{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding:2rem 1.8rem;max-width:420px}
+.vcontent-right{margin-left:auto}
+.vcontent-bottom{justify-content:flex-end;max-width:100%;padding-bottom:2.2rem;padding-left:1.4rem}
+.vc-eye{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem}
+.vc-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5.5vw,2.8rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:0.55rem}
+.vc-title em{font-style:italic;color:var(--gold-light)}
+.vc-body{font-size:0.78rem;color:var(--cream-dim);line-height:1.72;max-width:320px}
+@media(max-width:600px){
+  .vband-tall{height:110vw;max-height:480px}
+  .vband-mid{height:85vw;max-height:380px}
+  .ov-left,.ov-right{background:linear-gradient(to bottom,rgba(13,27,42,0.15) 0%,rgba(13,27,42,0.88) 58%,rgba(13,27,42,0.98) 100%)}
+  .vcontent,.vcontent-right{justify-content:flex-end;max-width:100%;padding:1.4rem 1.25rem 1.8rem}
+  .vc-body{max-width:100%}
+}
+
+/* ── SECTIONS ── */
+.band-dark{background:var(--navy)}
+.band-mid{background:var(--navy-mid)}
+.sec{padding:4.5rem 1.25rem;max-width:1060px;margin:0 auto}
+.eye{font-size:0.58rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:0.65rem;text-align:center}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,5.5vw,2.9rem);font-weight:300;color:var(--white);text-align:center;margin-bottom:0.9rem;line-height:1.15}
+.stitle em{font-style:italic;color:var(--gold-light)}
+.sbody{font-size:0.88rem;color:var(--cream-dim);text-align:center;max-width:620px;margin:0 auto 2.5rem;line-height:1.85}
+.bq{border-left:2px solid var(--gold);padding:1rem 1.5rem;margin:2rem auto;max-width:560px;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;font-weight:300;color:var(--cream);line-height:1.55}
+
+/* GT PRESENTED BY BANNER */
+.gt-banner{background:linear-gradient(135deg,rgba(201,168,76,0.1) 0%,rgba(201,168,76,0.04) 100%);border:1px solid rgba(201,168,76,0.22);padding:2rem 1.5rem;text-align:center;max-width:640px;margin:0 auto 3rem;position:relative}
+.gt-banner-eye{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:0.8rem}
+.gt-banner-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:600;color:var(--gold);letter-spacing:0.15em;margin-bottom:0.3rem}
+.gt-banner-body{font-size:0.78rem;color:var(--cream-dim);line-height:1.65}
+
+/* NON-NEGS */
+.ng-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:rgba(201,168,76,0.11);border:1px solid rgba(201,168,76,0.11);margin-top:2.5rem}
+.ng-card{background:var(--navy-mid);padding:1.7rem 1.3rem;transition:background 0.2s}
+.ng-card:hover{background:var(--navy-light)}
+.ng-title{font-family:'Cormorant Garamond',serif;font-size:1.02rem;font-weight:600;color:var(--gold);margin-bottom:0.45rem;padding-bottom:0.45rem;border-bottom:1px solid rgba(201,168,76,0.17)}
+.ng-body{font-size:0.78rem;color:var(--cream-dim);line-height:1.65}
+
+/* ITINERARY */
+.itin-wrap{max-width:760px;margin:0 auto;position:relative}
+.itin-wrap::before{content:'';position:absolute;left:29px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(201,168,76,0.32) 8%,rgba(201,168,76,0.32) 92%,transparent)}
+@media(max-width:500px){.itin-wrap::before{display:none}}
+.ii{display:flex;gap:1.3rem;padding:1.9rem 0;border-bottom:1px solid rgba(201,168,76,0.07)}
+.ii:last-child{border-bottom:none}
+.ii-num{flex-shrink:0;width:58px;height:58px;border:1px solid rgba(201,168,76,0.32);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy-mid);position:relative;z-index:1}
+.ii-label{font-size:0.44rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-dim)}
+.ii-digits{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;color:var(--gold);line-height:1}
+.ii-body{flex:1;padding-top:0.25rem}
+.ii-loc{font-size:0.56rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--gold);margin-bottom:0.22rem}
+.ii-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--white);margin-bottom:0.3rem}
+.ii-drive{display:inline-flex;font-size:0.66rem;color:var(--muted);background:rgba(201,168,76,0.07);padding:0.15rem 0.5rem;margin-bottom:0.5rem;border-left:2px solid var(--gold-dim)}
+.ii-desc{font-size:0.8rem;color:var(--cream-dim);line-height:1.72}
+@media(max-width:500px){
+  .ii{flex-direction:column;gap:0.7rem}
+  .ii-num{width:100%;height:32px;flex-direction:row;gap:0.4rem}
+}
+
+/* INCLUSIONS */
+.incl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.1rem;margin-top:2.5rem}
+.ic{background:var(--navy-mid);border:1px solid rgba(201,168,76,0.12);padding:1.3rem}
+.ic-title{font-size:0.56rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--gold);margin-bottom:0.85rem;padding-bottom:0.45rem;border-bottom:1px solid rgba(201,168,76,0.17)}
+.ic-row{display:flex;align-items:flex-start;gap:0.5rem;font-size:0.78rem;color:var(--cream-dim);margin-bottom:0.4rem;line-height:1.5}
+.dot{width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:0.57em}
+.dg{background:var(--gold)}.dr{background:#8B1A1A}
+
+/* PRICING */
+.pb{border:1px solid rgba(201,168,76,0.27);padding:2.6rem 1.6rem;text-align:center;max-width:500px;margin:0 auto 1.2rem;position:relative;background:linear-gradient(135deg,var(--navy-mid),var(--navy-light))}
+.pb::before{content:'VERA LEVEL PRICE';position:absolute;top:-0.52rem;left:50%;transform:translateX(-50%);background:var(--navy-mid);color:var(--gold);font-size:0.48rem;letter-spacing:0.3em;padding:0 0.75rem}
+.pbig{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,9vw,4rem);font-weight:600;color:var(--gold);line-height:1}
+.pcurr{font-size:0.44em;vertical-align:super}
+.ptax{font-size:0.72rem;color:var(--muted);margin:0.35rem 0 1.1rem}
+.pexcl{font-size:0.68rem;color:var(--cream-dim);background:rgba(139,26,26,0.17);border:1px solid rgba(139,26,26,0.28);padding:0.3rem 0.85rem;display:inline-block;margin-bottom:1.6rem}
+.ct{width:100%;border-collapse:collapse;max-width:500px;margin:1.8rem auto 0}
+.ct tr{border-bottom:1px solid rgba(201,168,76,0.07)}
+.ct tr:last-child{border-bottom:none}
+.ct td{padding:0.65rem 0.75rem;font-size:0.76rem;color:var(--cream-dim)}
+.ct td:last-child{text-align:right;color:var(--gold-light)}
+
+/* FOOTER */
+.footer{padding:5rem 1.25rem;text-align:center;border-top:2px solid rgba(201,168,76,0.2);background:linear-gradient(180deg,rgba(201,168,76,0.06) 0%,transparent 100%)}
+.gt-footer-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,6vw,2.8rem);font-weight:600;color:var(--gold);letter-spacing:0.2em;margin-bottom:0.3rem}
+.gt-footer-tag{font-size:0.55rem;letter-spacing:0.28em;color:var(--cream-dim);text-transform:uppercase;margin-bottom:0.5rem}
+.gt-footer-desc{font-size:0.8rem;color:var(--muted);max-width:420px;margin:0 auto 2.5rem;line-height:1.7}
+.wa-btn{display:inline-flex;align-items:center;gap:0.55rem;background:#25D366;color:#000;font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:0.95rem 1.7rem;text-decoration:none;transition:opacity 0.2s}
+.wa-btn:hover{opacity:0.88}
+.collab-footer{display:flex;align-items:center;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(201,168,76,0.1)}
+.collab-footer-text{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.fnote{font-size:0.6rem;color:var(--muted);margin-top:1.2rem;letter-spacing:0.05em}
+</style>
+</head>
+<body>
+
+<!-- STRIP -->
+<div class="strip"><strong>Golden Travels</strong> &nbsp;presents&nbsp; Vera Level South Africa &nbsp;—&nbsp; May 21–31, 2026 &nbsp;|&nbsp; Limited Seats</div>
+
+<!-- HERO -->
+<div class="hero">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto"
+    src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/ert%201%20V.mp4"></video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+
+    <div class="gt-hero-badge">
+      <div class="gt-hero-name">GOLDEN TRAVELS</div>
+      <div class="gt-hero-tag">Premium Road Travel &nbsp;·&nbsp; Since 1987</div>
+      <div class="gt-hero-est">Bengaluru, India</div>
+    </div>
+
+    <div class="collab-line">
+      <span class="collab-text">in partnership with</span>
+      <div class="ert-pill">
+        <div class="ert-mark">ERT</div>
+        <div class="ert-sub">Epic Road Trips</div>
+      </div>
+      <span class="collab-text">presents</span>
+    </div>
+
+    <p class="hero-eyebrow">Vera Level South Africa — Season 2</p>
+    <h1 class="hero-title">South<br><em>Africa</em></h1>
+    <p class="hero-sub">The Return &nbsp;·&nbsp; Season Two</p>
+    <div class="pill">
+      <span>May 21</span><span class="sep">—</span><span>May 31, 2026</span>
+      <span class="sep">|</span><span>11 Days</span>
+    </div>
+    <div class="cta-row">
+      <a href="https://wa.me/919902933877?text=Hi%2C%20I%20saw%20the%20South%20Africa%20Season%202%20trip%20on%20Golden%20Travels%20and%20want%20to%20book!" class="btn btn-gold">Reserve with Golden Travels</a>
+      <a href="#itinerary" class="btn btn-ol">View Itinerary</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div></div>
+</div>
+
+<!-- GT TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-num">37<span style="font-size:1.2rem">+</span></div>
+      <div class="trust-label">Years in Operation</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-num">1987</div>
+      <div class="trust-label">Established, Bengaluru</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-num">24<span style="font-size:1.2rem">/7</span></div>
+      <div class="trust-label">Support Throughout</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-num">100<span style="font-size:1.2rem">%</span></div>
+      <div class="trust-label">Curated, End to End</div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY SA -->
+<div class="band-mid">
+  <div class="sec">
+    <p class="eye">Why South Africa</p>
+    <h2 class="stitle">Not a Holiday.<br><em>A Legacy.</em></h2>
+    <p class="sbody">We can take our families to Disneyland, to malls, to theme parks. Fun fades. Photos fade. But standing five feet from a rhinoceros — hearing a lion at sunrise — watching elephants pass your vehicle like ancient gods.</p>
+    <div class="bq">"South Africa doesn't just give you a holiday. It gives your family a story that becomes legacy."</div>
+    <p class="sbody" style="margin-bottom:0">Last season, children who barely sit still for ten minutes were suddenly silent — eyes wide open. Parents cried. Every single family said the same thing: <em style="color:var(--cream)">This is the best trip we have ever done together.</em></p>
+  </div>
+</div>
+
+<!-- VINEYARD VIDEO -->
+<div class="vband vband-mid">
+  <video autoplay muted loop playsinline preload="auto"
+    src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/vineyard.mp4"></video>
+  <div class="ov-left"></div>
+  <div class="vcontent">
+    <p class="vc-eye">Days 1 — 2</p>
+    <h3 class="vc-title">Stellenbosch<br><em>Wine Country</em></h3>
+    <p class="vc-body">South Africa's premier wine region — family-friendly estates, oak-lined streets, and vineyard picnics under an open sky.</p>
+  </div>
+</div>
+
+<!-- NON-NEGS -->
+<div class="band-dark">
+  <div class="sec">
+    <p class="eye">The Golden Travels Standard</p>
+    <h2 class="stitle">Our <em>Non-Negotiables</em></h2>
+    <p class="sbody" style="margin-bottom:0">Three and a half decades of premium road travel have taught us what matters. These are the promises every Golden Travels guest travels with.</p>
+    <div class="ng-grid">
+      <div class="ng-card">
+        <div class="ng-title">24/7 Command</div>
+        <div class="ng-body">Visa to vehicle, full support throughout. No stone unturned, no detail overlooked — from Bengaluru to Cape Town and back.</div>
+      </div>
+      <div class="ng-card">
+        <div class="ng-title">Epic Stays and Beast Machines</div>
+        <div class="ng-body">Curated boutique Airbnbs, wilderness cabins, and premium 4x4s that own the terrain. Homes with soul, not hotel boxes.</div>
+      </div>
+      <div class="ng-card">
+        <div class="ng-title">Self-Drive, Full Throttle</div>
+        <div class="ng-body">No buses. No chauffeurs. You take the wheel through some of the world's most spectacular road landscapes.</div>
+      </div>
+      <div class="ng-card">
+        <div class="ng-title">No Hidden Costs</div>
+        <div class="ng-body">Vera Level price guarantee. What is quoted is what you pay. Every inclusion is spelled out — no surprises, ever.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SAFARI VIDEO -->
+<div class="vband vband-tall">
+  <video autoplay muted loop playsinline preload="auto"
+    src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/safari.mp4"></video>
+  <div class="ov-right"></div>
+  <div class="vcontent vcontent-right">
+    <p class="vc-eye">Days 3 — 4</p>
+    <h3 class="vc-title">The Big Five<br><em>Safari</em></h3>
+    <p class="vc-body">Lions, elephants, rhinos, leopards and buffalo — morning and afternoon game drives at Inverdoorn or Aquila Reserve. This is the moment that changes everything.</p>
+  </div>
+</div>
+
+<!-- ITINERARY -->
+<div class="band-mid" id="itinerary">
+  <div class="sec">
+    <p class="eye">The Journey</p>
+    <h2 class="stitle">11 Days &nbsp;<em>1,600 km</em></h2>
+    <p class="sbody">Curated end to end by Golden Travels — wine country, two safari reserves, the Eastern Cape coast, the Garden Route, and a Cape Town finale.</p>
+    <div class="itin-wrap">
+      <div class="ii">
+        <div class="ii-num"><span class="ii-label">Day</span><span class="ii-digits">1–2</span></div>
+        <div class="ii-body">
+          <div class="ii-loc">Stellenbosch Wine Country</div>
+          <div class="ii-title">Arrive and Into the Vines</div>
+          <div class="ii-drive">50 km from Cape Town — 1 hour</div>
+          <div class="ii-desc">Pick up your vehicle and head straight into wine country. Tastings at Spier or Boschendal, oak-lined streets, and a full second day in Jonkershoek Nature Reserve for scenic hikes and vineyard picnics.</div>
+        </div>
+      </div>
+      <div class="ii">
+        <div class="ii-num"><span class="ii-label">Day</span><span class="ii-digits">3–4</span></div>
+        <div class="ii-body">
+          <div class="ii-loc">Inverdoorn or Aquila Game Reserve</div>
+          <div class="ii-title">Into the Wild — Big Five Safari</div>
+          <div class="ii-drive">200 km — 2.5 hours</div>
+          <div class="ii-desc">Afternoon arrival for your first game drive — lions, elephants, rhinos in their natural habitat. Day 4 begins with a sunrise drive, leisurely breakfast at the lodge, and children's educational conservation programs.</div>
+        </div>
+      </div>
+      <div class="ii">
+        <div class="ii-num"><span class="ii-label">Day</span><span class="ii-digits">5–6</span></div>
+        <div class="ii-body">
+          <div class="ii-loc">Port Elizabeth and Addo Elephant Park</div>
+          <div class="ii-title">Coastal Drive and Elephant Encounters</div>
+          <div class="ii-drive">500 km — 5.5 hours</div>
+          <div class="ii-desc">A long, spectacular drive along the Eastern Cape coast. Arrive in time for sunset on the beach. Day 6 is all Addo — a self-drive through Africa's most elephant-dense national park, with zebras, buffalo, and black rhino roaming free.</div>
+        </div>
+      </div>
+      <div class="ii">
+        <div class="ii-num"><span class="ii-label">Day</span><span class="ii-digits">7–8</span></div>
+        <div class="ii-body">
+          <div class="ii-loc">Garden Route — Knysna</div>
+          <div class="ii-title">The Most Beautiful Drive on Earth</div>
+          <div class="ii-drive">260 km — 3 hours</div>
+          <div class="ii-desc">Drive the Garden Route and arrive in Knysna for the Heads at sunset and fresh seafood by the lagoon. Day 8: Bloukrans Bridge — the world's highest commercial bungee jump. Not mandatory, but absolutely legendary.</div>
+        </div>
+      </div>
+      <div class="ii">
+        <div class="ii-num"><span class="ii-label">Day</span><span class="ii-digits">9–10</span></div>
+        <div class="ii-body">
+          <div class="ii-loc">Return to Cape Town</div>
+          <div class="ii-title">Penguins, Table Mountain and the V&amp;A</div>
+          <div class="ii-drive">390 km — 4.5 hours</div>
+          <div class="ii-desc">Stop at Betty's Bay to meet the African penguins at Stony Point — one of the trip's most unexpectedly magical moments. Roll into Cape Town by evening. Final day: Table Mountain, Robben Island, the V&amp;A Waterfront.</div>
+        </div>
+      </div>
+      <div class="ii">
+        <div class="ii-num"><span class="ii-label">Day</span><span class="ii-digits">11</span></div>
+        <div class="ii-body">
+          <div class="ii-loc">Cape Town — Departure</div>
+          <div class="ii-title">Farewell South Africa</div>
+          <div class="ii-desc">A final morning in one of the world's most beautiful cities. Return your vehicle, board your flight home — carrying memories that will outlast everything else.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CAPE TOWN VIDEO -->
+<div class="vband vband-mid">
+  <video autoplay muted loop playsinline preload="auto"
+    src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/cape%20town.mp4"></video>
+  <div class="ov-bottom"></div>
+  <div class="vcontent vcontent-bottom">
+    <p class="vc-eye">Days 9 — 11</p>
+    <h3 class="vc-title">Cape <em>Town</em></h3>
+    <p class="vc-body">Table Mountain. Robben Island. The V&amp;A Waterfront. The city that earns its place on every bucket list — your final chapter.</p>
+  </div>
+</div>
+
+<!-- INCLUSIONS -->
+<div class="band-dark">
+  <div class="sec">
+    <p class="eye">What is Covered</p>
+    <h2 class="stitle">Inclusions and <em>Exclusions</em></h2>
+    <div class="incl-grid">
+      <div class="ic">
+        <div class="ic-title">Travel and Transport</div>
+        <div class="ic-row"><span class="dot dg"></span>Car rental — full journey</div>
+        <div class="ic-row"><span class="dot dg"></span>Fuel — all days</div>
+        <div class="ic-row"><span class="dot dg"></span>All toll charges</div>
+        <div class="ic-row"><span class="dot dg"></span>Car insurance</div>
+      </div>
+      <div class="ic">
+        <div class="ic-title">Stays and Meals</div>
+        <div class="ic-row"><span class="dot dg"></span>Boutique Airbnbs and experiential properties</div>
+        <div class="ic-row"><span class="dot dg"></span>Daily breakfast at all stays</div>
+        <div class="ic-row"><span class="dot dg"></span>Breakfast and lunch at game reserve</div>
+      </div>
+      <div class="ic">
+        <div class="ic-title">Activities and Experiences</div>
+        <div class="ic-row"><span class="dot dg"></span>Stellenbosch wine tasting</div>
+        <div class="ic-row"><span class="dot dg"></span>Inverdoorn or Aquila game reserve entry</div>
+        <div class="ic-row"><span class="dot dg"></span>Addo Elephant Park self-drive entry</div>
+        <div class="ic-row"><span class="dot dg"></span>All national park and reserve entries</div>
+        <div class="ic-row"><span class="dot dg"></span>Travel insurance and local taxes</div>
+      </div>
+      <div class="ic">
+        <div class="ic-title">Not Included</div>
+        <div class="ic-row"><span class="dot dr"></span>International flights</div>
+        <div class="ic-row"><span class="dot dr"></span>Bloukrans Bridge bungee jump</div>
+        <div class="ic-row"><span class="dot dr"></span>Lunch and dinner (except game reserve)</div>
+        <div class="ic-row"><span class="dot dr"></span>VFS and visa fees</div>
+        <div class="ic-row"><span class="dot dr"></span>Personal expenses and optional upgrades</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="band-mid">
+  <div class="sec">
+    <p class="eye">Investment</p>
+    <h2 class="stitle">Pricing and <em>Terms</em></h2>
+    <div class="gt-banner">
+      <div class="gt-banner-eye">Booked and managed by</div>
+      <div class="gt-banner-name">GOLDEN TRAVELS</div>
+      <div class="gt-banner-body">37 years of premium road travel. Your booking, your questions, your experience — handled entirely by our team in Bengaluru.</div>
+    </div>
+    <div class="pb">
+      <div style="font-size:0.58rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:0.35rem">Per Person</div>
+      <div class="pbig"><span class="pcurr">&#8377;</span>1,99,999</div>
+      <div class="ptax">+ 5% GST &nbsp;+&nbsp; 2% TCS</div>
+      <div class="pexcl">Excludes: Flights &nbsp;·&nbsp; Lunch and Dinner</div>
+      <div style="font-size:0.68rem;color:var(--muted)">TCS waiver available with valid LRS declaration form</div>
+    </div>
+    <p class="eye" style="margin-top:2.8rem">Cancellation Policy</p>
+    <table class="ct">
+      <tr><td>Before visa application</td><td>Booking amount forfeited</td></tr>
+      <tr><td>After visa / confirmation</td><td>50% of tour fee</td></tr>
+      <tr><td>Less than 30 days before departure</td><td>75% of tour fee</td></tr>
+      <tr><td>Less than 10 days before departure</td><td>100% of tour fee</td></tr>
+      <tr><td>No show</td><td>100% of tour fee</td></tr>
+    </table>
+    <p style="text-align:center;font-size:0.68rem;color:var(--muted);margin-top:1.1rem">International Driving Permit mandatory. Valid Indian licence (min. 1 year) required. Bank transfer only — cash not accepted.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="gt-footer-name">GOLDEN TRAVELS</div>
+  <div class="gt-footer-tag">Premium Road Travel &nbsp;·&nbsp; Est. 1987 &nbsp;·&nbsp; Bengaluru</div>
+  <div class="gt-footer-desc">Three and a half decades of curated road experiences across India and beyond. This is our South Africa — and we would love it to be yours.</div>
+  <div class="cta-row" style="margin-bottom:1rem">
+    <a href="https://wa.me/919902933877?text=Hi%2C%20I%20want%20to%20book%20the%20South%20Africa%20Season%202%20trip%20with%20Golden%20Travels!" class="wa-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Book with Golden Travels
+    </a>
+    <a href="#itinerary" class="btn btn-ol">Full Itinerary</a>
+  </div>
+  <div class="collab-footer">
+    <span class="collab-footer-text">In partnership with</span>
+    <div class="ert-pill">
+      <div class="ert-mark">ERT</div>
+      <div class="ert-sub">Epic Road Trips</div>
+    </div>
+    <span class="collab-footer-text">and KD</span>
+  </div>
+  <p class="fnote">Jurisdiction: Coimbatore, Tamil Nadu &nbsp;·&nbsp; All disputes subject to exclusive jurisdiction of Coimbatore courts</p>
+</div>
+
+<script>
+document.querySelectorAll('video').forEach(function(v){
+  if(v.readyState>=3){v.classList.add('loaded')}
+  else{v.addEventListener('canplay',function(){v.classList.add('loaded')},{once:true})}
+});
+</script>
+</body>
+</html>

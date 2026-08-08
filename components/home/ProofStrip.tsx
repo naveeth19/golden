@@ -1,19 +1,26 @@
 import { yearsOfService } from "@/lib/brand";
+import { FLEET_SIZE_LABEL } from "@/lib/featured-fleet";
 
 /**
  * Trust figures. Every number here must be defensible.
  *
  * - Years: computed from FOUNDED_YEAR, not hardcoded.
- * - Vehicles: verified count of active rows in the `fleet` table.
+ * - Vehicles: FLEET_SIZE_LABEL — vehicles operated, which is not the same as
+ *   the row count in the `fleet` table (that lists models, not units).
  * - Clients: pre-existing marketing figure, carried over unchanged.
  *
  * A "4.9 rating" stat was removed: nothing in the codebase or database
  * backs it, and there is no review integration to source it from.
  */
 export default function ProofStrip() {
+  const [fleetValue, fleetSuffix] = [
+    FLEET_SIZE_LABEL.replace(/\+$/, ""),
+    FLEET_SIZE_LABEL.endsWith("+") ? "+" : "",
+  ];
+
   const stats = [
     { value: String(yearsOfService()), suffix: "", label: "Years on the road" },
-    { value: "36", suffix: "", label: "Vehicles in the fleet" },
+    { value: fleetValue, suffix: fleetSuffix, label: "Vehicles in the fleet" },
     { value: "500", suffix: "+", label: "Clients served" },
   ];
 

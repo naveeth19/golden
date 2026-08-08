@@ -30,7 +30,7 @@ export default function StoryQuote() {
     <section className="py-20 lg:py-28 border-b border-[var(--gt-border)] bg-[var(--gt-cream)]">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <SectionHead
-          index="04"
+          index="01"
           eyebrow="Our story"
           title={
             <>
@@ -100,11 +100,11 @@ export default function StoryQuote() {
         </div>
 
         {/* Trusted by — logos kept from the old ClientLogos section */}
-        <div className="mt-20 pt-10 border-t border-[var(--gt-border)]">
+        <div className="mt-20 pt-10 border-t border-[var(--gt-border)] text-center">
           <span className="block text-[10px] uppercase tracking-[0.28em] text-[var(--gt-muted)] mb-10">
             Trusted by
           </span>
-          <ul className="flex flex-wrap items-center gap-x-12 gap-y-10 lg:gap-x-20">
+          <ul className="flex flex-wrap items-center justify-center gap-x-12 gap-y-10 lg:gap-x-20">
             {clients.map((c) => (
               <li key={c.name} className="relative h-14 w-32 lg:h-16 lg:w-36">
                 <Image
@@ -113,7 +113,7 @@ export default function StoryQuote() {
                   fill
                   sizes="144px"
                   loading="lazy"
-                  className="object-contain object-left opacity-75 hover:opacity-100 transition-opacity duration-500"
+                  className="object-contain object-center opacity-75 hover:opacity-100 transition-opacity duration-500"
                 />
               </li>
             ))}

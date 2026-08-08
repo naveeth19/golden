@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { FLEET_SIZE_LABEL } from "@/lib/featured-fleet";
 
 export default function AboutSection() {
   return (
@@ -20,7 +21,7 @@ export default function AboutSection() {
               thousands of families, corporates, and institutions with unwavering commitment to safety and comfort.
             </p>
             <p className="text-white/60 text-sm leading-relaxed mb-8">
-              Today, our fleet of 13+ premium vehicles and a team of experienced drivers ensure that every journey 
+              Today, our fleet of {FLEET_SIZE_LABEL} premium vehicles and a team of experienced drivers ensure that every journey 
               with Golden Travels is a journey you can trust.
             </p>
             <div className="flex flex-wrap gap-4">

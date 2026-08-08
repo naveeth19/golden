@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createPublicClient, FLEET_CARD_COLUMNS } from "@/lib/supabase/public";
-import { FEATURED_FLEET_SLUGS } from "@/lib/featured-fleet";
+import { FEATURED_FLEET_SLUGS, FLEET_SIZE_LABEL } from "@/lib/featured-fleet";
 import type { Fleet } from "@/lib/supabase/types";
 import VehicleSilhouette from "@/components/fleet/VehicleSilhouette";
 import SectionHead from "./SectionHead";
@@ -27,7 +27,7 @@ export default async function FleetRail() {
     <section className="py-20 lg:py-28 border-b border-[var(--gt-border)] bg-[var(--gt-cream)]">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <SectionHead
-          index="02"
+          index="03"
           eyebrow="The fleet"
           title={
             <>
@@ -103,15 +103,16 @@ export default async function FleetRail() {
           {/* Terminal card — turns the end of the rail into the CTA. */}
           <Link
             href="/fleet"
-            className="group shrink-0 w-[200px] flex flex-col justify-center border-l border-[var(--gt-border)] pl-6"
+            className="group shrink-0 w-[220px] flex flex-col justify-center border-l border-[var(--gt-border)] pl-6"
           >
             <span
               className="text-2xl leading-tight text-[var(--gt-navy)] group-hover:text-[var(--gt-red)] transition-colors"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
-              All 36
-              <br />
-              vehicles
+              View more
+            </span>
+            <span className="mt-2 text-[11px] uppercase tracking-[0.16em] text-[var(--gt-muted)]">
+              {FLEET_SIZE_LABEL} vehicles
             </span>
             <span className="mt-4 w-8 h-px bg-[var(--gt-navy)] group-hover:w-12 group-hover:bg-[var(--gt-red)] transition-all duration-300" />
           </Link>

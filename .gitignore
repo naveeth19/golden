@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI agent / editor tooling — local only, not part of the app
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Stray duplicate of public/bali-trip.html (1.7MB)
+bali_trip*.html

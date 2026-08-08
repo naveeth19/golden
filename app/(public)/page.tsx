@@ -25,11 +25,15 @@ export default function HomePage() {
   return (
     <>
       <HomeHero />
+      {/* Story sits directly under the hero — the 1987 yard photograph is the
+          strongest asset on the page. ProofStrip follows it rather than the
+          hero so the two read as one cream block: the story, then the figures
+          that back it. Keeps the white/cream alternation intact. */}
+      <StoryQuote />
       <ProofStrip />
       <ServicesEditorial />
       <FleetRail />
       <ExperiencesBlock />
-      <StoryQuote />
       <ClosingCta />
     </>
   );

@@ -29,7 +29,7 @@ export default function ExperiencesBlock() {
     <section className="py-20 lg:py-28 border-b border-[var(--gt-border)]">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <SectionHead
-          index="03"
+          index="04"
           eyebrow="Golden Experiences"
           title={
             <>

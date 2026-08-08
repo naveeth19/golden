@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { yearsOfService } from "@/lib/brand";
+import { FLEET_SIZE_LABEL } from "@/lib/featured-fleet";
 import ClientLogos from "@/components/sections/ClientLogos";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ const milestones = [
   { year: "2005", title: "Pilgrimage Division", desc: "Launched dedicated pilgrimage tour packages." },
   { year: "2012", title: "Corporate Partnerships", desc: "Partnered with TUV SUD and Brigade Group." },
   { year: "2018", title: "Digital Transformation", desc: "Online booking and fleet management system." },
-  { year: "2024", title: "13+ Vehicle Fleet", desc: "Premium fleet serving 500+ clients across South India." },
+  { year: "2024", title: "Fleet Expansion", desc: "Premium fleet serving 500+ clients across South India." },
 ];
 
 const reasons = [
@@ -68,7 +69,7 @@ export default function AboutPage() {
               </p>
               <p className="text-[var(--gt-muted)] text-sm leading-relaxed mb-4">
                 Over the past three decades, we have served thousands of families, corporate clients, and 
-                institutions. Our fleet has grown to 13+ premium vehicles, and our team of experienced drivers 
+                institutions. Our fleet has grown to {FLEET_SIZE_LABEL} premium vehicles, and our team of experienced drivers 
                 ensures that every journey is a journey you can trust.
               </p>
               <p className="text-[var(--gt-muted)] text-sm leading-relaxed">

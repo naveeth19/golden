@@ -3,6 +3,7 @@ import ContactForm from "./ContactForm";
 import { waLink } from "@/lib/wa";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact Us",
   description:
     "Get in touch with Golden Travels for bookings, enquiries, and travel assistance. Visit us at Rajajinagar, Bengaluru or call +91 99029 33877.",
@@ -80,8 +81,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-[var(--gt-navy)] mb-1">Email</h3>
-                    <a href="mailto:goldentravels@rediffmail.com" className="text-sm text-[var(--gt-red)] hover:underline">
-                      goldentravels@rediffmail.com
+                    <a href="mailto:naveeth@goldentravels.co" className="text-sm text-[var(--gt-red)] hover:underline">
+                      naveeth@goldentravels.co
                     </a>
                   </div>
                 </div>

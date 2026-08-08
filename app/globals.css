@@ -112,6 +112,48 @@
   }
 }
 
+/* ── Homepage motion ───────────────────────────────────────────────
+   Load-time reveal only, and only above the fold. Scroll-triggered
+   animation would need a client component on an otherwise fully
+   static page, which is not worth the JS. */
+@keyframes gt-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gt-rise {
+  animation: gt-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes gt-wipe {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.gt-wipe {
+  transform-origin: left;
+  animation: gt-wipe 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gt-rise,
+  .gt-wipe,
+  .animate-ticker {
+    animation: none;
+  }
+  .gt-rise { opacity: 1; transform: none; }
+  .gt-wipe { transform: scaleX(1); }
+}
+
+/* Horizontal rails: hide the scrollbar but keep the scrolling. */
+.gt-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+.gt-rail::-webkit-scrollbar { display: none; }
+.gt-rail > * { scroll-snap-align: start; }
+
 @keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }

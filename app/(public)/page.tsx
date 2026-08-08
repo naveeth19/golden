@@ -1,52 +1,36 @@
-import Hero from "@/components/sections/Hero";
-import ServicesGrid from "@/components/sections/ServicesGrid";
-import AboutSection from "@/components/sections/AboutSection";
-import WhyUsSection from "@/components/sections/WhyUsSection";
-import ClientLogos from "@/components/sections/ClientLogos";
-import FleetScroll from "@/components/sections/FleetScroll";
-import PackagesGrid from "@/components/sections/PackagesGrid";
-import ProjectsTeaser from "@/components/sections/ProjectsTeaser";
-import Testimonials from "@/components/sections/Testimonials";
-import CtaBanner from "@/components/sections/CtaBanner";
+import HomeHero from "@/components/home/HomeHero";
+import ProofStrip from "@/components/home/ProofStrip";
+import ServicesEditorial from "@/components/home/ServicesEditorial";
+import FleetRail from "@/components/home/FleetRail";
+import ExperiencesBlock from "@/components/home/ExperiencesBlock";
+import StoryQuote from "@/components/home/StoryQuote";
+import ClosingCta from "@/components/home/ClosingCta";
+import type { Metadata } from "next";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
-const tickerItems = [
-  "Outstation Rentals",
-  "Airport Services",
-  "City Taxi",
-  "Enterprise Transport",
-  "Event Management",
-  "Pilgrimage Tours",
-  "Corporate Travel",
-  "Wedding Transport",
-];
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
+/**
+ * Homepage.
+ *
+ * The previous 11-section layout is intentionally preserved in
+ * components/sections/ — nothing was deleted. Content that no longer appears
+ * here is still reachable: AboutSection via /about, PackagesGrid via
+ * /packages, and the client logos are folded into StoryQuote.
+ */
 export default function HomePage() {
   return (
     <>
-      <Hero />
-
-      {/* Scrolling Ticker */}
-      <div className="bg-[var(--gt-navy)] py-4 overflow-hidden">
-        <div className="animate-ticker flex whitespace-nowrap">
-          {[...tickerItems, ...tickerItems].map((item, i) => (
-            <span key={i} className="text-white/30 text-sm mx-8 uppercase tracking-widest font-light">
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <AboutSection />
-      <ServicesGrid />
-      <WhyUsSection />
-      <ClientLogos />
-      <FleetScroll />
-      <PackagesGrid />
-      <ProjectsTeaser />
-      <Testimonials />
-      <CtaBanner />
+      <HomeHero />
+      <ProofStrip />
+      <ServicesEditorial />
+      <FleetRail />
+      <ExperiencesBlock />
+      <StoryQuote />
+      <ClosingCta />
     </>
   );
 }

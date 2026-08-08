@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { yearsOfService } from "@/lib/brand";
 import ClientLogos from "@/components/sections/ClientLogos";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About Us",
   description:
     "Learn about Golden Travels — founded in 1987 by Mr Lakshmana K Amin. Over three decades of premium road travel services across South India from Bengaluru.",
@@ -18,7 +20,7 @@ const milestones = [
 ];
 
 const reasons = [
-  { title: "37+ Years Experience", desc: "Trusted by families and corporates since 1987." },
+  { title: `${yearsOfService()} Years Experience`, desc: "Trusted by families and corporates since 1987." },
   { title: "Professional Drivers", desc: "Experienced, courteous drivers with route expertise." },
   { title: "Well-Maintained Fleet", desc: "Regularly serviced vehicles for safe travel." },
   { title: "Transparent Pricing", desc: "No hidden charges. Clear and fair pricing." },

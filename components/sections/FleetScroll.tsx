@@ -1,16 +1,24 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient, FLEET_CARD_COLUMNS } from "@/lib/supabase/public";
 import type { Fleet } from "@/lib/supabase/types";
 import Link from "next/link";
+import Image from "next/image";
+import VehicleSilhouette from "@/components/fleet/VehicleSilhouette";
+import { FEATURED_FLEET_SLUGS } from "@/lib/featured-fleet";
 
 export default async function FleetScroll() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: vehicles } = await supabase
     .from("fleet")
-    .select("*")
+    .select(FLEET_CARD_COLUMNS)
     .eq("is_active", true)
-    .order("created_at", { ascending: true });
+    .in("slug", [...FEATURED_FLEET_SLUGS]);
 
-  const fleet: Fleet[] = vehicles || [];
+  const rows = (vehicles || []) as unknown as Fleet[];
+
+  // Preserve the hand-picked order from FEATURED_FLEET_SLUGS, not DB order.
+  const fleet = FEATURED_FLEET_SLUGS.map((slug) =>
+    rows.find((v) => v.slug === slug)
+  ).filter((v): v is Fleet => Boolean(v));
 
   return (
     <section className="bg-[var(--gt-cream)] py-20">
@@ -37,22 +45,26 @@ export default async function FleetScroll() {
         </div>
 
         <div className="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
-          {fleet.length === 0 ? (
-            <p className="text-[var(--gt-muted)] text-sm">No vehicles available at the moment.</p>
-          ) : (
-            fleet.map((v) => (
+          {fleet.map((v) => (
               <Link
                 key={v.id}
                 href={`/fleet/${v.slug}`}
                 className="min-w-[280px] max-w-[280px] border border-[var(--gt-border)] bg-white flex-shrink-0 group"
               >
                 <div className="h-40 bg-[var(--gt-navy)] flex items-center justify-center relative overflow-hidden">
-                  <svg width="80" height="40" viewBox="0 0 80 40" fill="none" stroke="white" strokeWidth="1" opacity="0.2">
-                    <rect x="10" y="15" width="60" height="15" rx="3" />
-                    <circle cx="22" cy="32" r="5" />
-                    <circle cx="58" cy="32" r="5" />
-                    <path d="M55 15V8h-20v7" />
-                  </svg>
+                  {v.images?.[0] ? (
+                    <Image
+                      src={v.images[0]}
+                      alt={v.name}
+                      width={280}
+                      height={160}
+                      sizes="280px"
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <VehicleSilhouette className="text-white" />
+                  )}
                   <span className="absolute top-3 left-3 bg-[var(--gt-red)] text-white text-[10px] uppercase tracking-wider font-semibold px-2 py-1">
                     {v.category}
                   </span>
@@ -71,8 +83,17 @@ export default async function FleetScroll() {
                   </div>
                 </div>
               </Link>
-            ))
-          )}
+            ))}
+        </div>
+
+        {/* Mobile: the header "View All" is hidden below md, so repeat it here. */}
+        <div className="mt-10 text-center md:hidden">
+          <Link
+            href="/fleet"
+            className="inline-flex items-center justify-center border border-[var(--gt-navy)] text-[var(--gt-navy)] text-[11px] uppercase tracking-[0.15em] font-semibold px-8 py-3 hover:bg-[var(--gt-navy)] hover:text-white transition-colors"
+          >
+            View All Fleet
+          </Link>
         </div>
       </div>
     </section>

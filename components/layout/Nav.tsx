@@ -21,21 +21,18 @@ export default function Nav() {
       <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
+          {/* One image, sized by CSS. This previously rendered twice — a
+              mobile and a desktop copy — and both defaulted to lazy loading
+              despite sitting in a fixed header above the fold. Lighthouse
+              picked this as the mobile LCP element with 1.7s of load delay. */}
           <Image
             src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
-            alt="Golden Travels Logo"
-            width={44}
-            height={44}
-            className="md:hidden"
-            style={{ objectFit: 'contain', width: 'auto', height: '44px' }}
-          />
-          <Image
-            src="https://qgifuuzvgbofgyasgwdp.supabase.co/storage/v1/object/public/Media/LOGO_GT.png"
-            alt="Golden Travels Logo"
+            alt="Golden Travels"
             width={52}
             height={52}
-            className="hidden md:block"
-            style={{ objectFit: 'contain', width: 'auto', height: '52px' }}
+            sizes="52px"
+            priority
+            className="h-[44px] md:h-[52px] w-auto object-contain"
           />
           <div className="flex flex-col">
             <span className="text-[var(--gt-navy)] font-bold text-lg leading-tight" style={{ fontFamily: "var(--font-playfair)" }}>

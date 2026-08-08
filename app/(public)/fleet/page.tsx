@@ -1,25 +1,26 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient, FLEET_CARD_COLUMNS } from "@/lib/supabase/public";
 import type { Fleet } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import FleetCard from "@/components/fleet/FleetCard";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/fleet" },
   title: "Our Fleet",
   description:
     "Explore our premium fleet of sedans, MPVs, SUVs, tempo travellers, and mini buses available for rent in Bengaluru. Golden Travels offers well-maintained vehicles for every journey.",
 };
 
 export default async function FleetPage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: vehicles } = await supabase
     .from("fleet")
-    .select("*")
+    .select(FLEET_CARD_COLUMNS)
     .eq("is_active", true)
     .order("created_at", { ascending: true });
 
-  const fleet: Fleet[] = vehicles || [];
+  const fleet = (vehicles || []) as unknown as Fleet[];
 
   return (
     <>
@@ -48,8 +49,8 @@ export default async function FleetPage() {
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {fleet.map((v) => (
-                <FleetCard key={v.id} vehicle={v} />
+              {fleet.map((v, i) => (
+                <FleetCard key={v.id} vehicle={v} priority={i < 3} />
               ))}
             </div>
           )}

@@ -1,25 +1,26 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient, BLOG_CARD_COLUMNS } from "@/lib/supabase/public";
 import type { Blog } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import BlogCard from "@/components/blog/BlogCard";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "Blog",
   description:
     "Travel tips, destination guides, and updates from Golden Travels. Read our latest articles on road travel across South India.",
 };
 
 export default async function BlogPage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: blogs } = await supabase
     .from("blogs")
-    .select("*")
+    .select(BLOG_CARD_COLUMNS)
     .eq("is_published", true)
     .order("published_at", { ascending: false });
 
-  const posts: Blog[] = blogs || [];
+  const posts = (blogs || []) as unknown as Blog[];
 
   return (
     <>

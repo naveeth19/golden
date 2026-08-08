@@ -1,14 +1,26 @@
-import { createClient } from "@/lib/supabase/server";
+import {
+  createPublicClient,
+  FLEET_CARD_COLUMNS,
+  FLEET_DETAIL_COLUMNS,
+} from "@/lib/supabase/public";
 import type { Fleet } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { waLink } from "@/lib/wa";
 import FleetCard from "@/components/fleet/FleetCard";
+import VehicleSilhouette from "@/components/fleet/VehicleSilhouette";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return [];
+  const supabase = createPublicClient();
+  const { data } = await supabase
+    .from("fleet")
+    .select("slug")
+    .eq("is_active", true);
+
+  return (data || []).map(({ slug }) => ({ slug: (slug as string).trim() }));
 }
 
 export async function generateMetadata({
@@ -17,16 +29,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: vehicle } = await supabase
     .from("fleet")
-    .select("*")
+    .select(FLEET_DETAIL_COLUMNS)
     .eq("slug", slug)
-    .single();
+    .single<Fleet>();
 
   if (!vehicle) return { title: "Vehicle Not Found" };
 
   return {
+    alternates: { canonical: `/fleet/${slug}` },
     title: `${vehicle.name} Rental in Bengaluru`,
     description: `Rent ${vehicle.name} (${vehicle.capacity} seater ${vehicle.category}) in Bengaluru. Features: ${(vehicle.features || []).join(", ")}. Book with Golden Travels.`,
   };
@@ -38,26 +51,26 @@ export default async function VehicleDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: vehicle } = await supabase
     .from("fleet")
-    .select("*")
+    .select(FLEET_DETAIL_COLUMNS)
     .eq("slug", slug)
-    .single();
+    .single<Fleet>();
 
   if (!vehicle) notFound();
 
-  const v = vehicle as Fleet;
+  const v = vehicle;
 
   const { data: related } = await supabase
     .from("fleet")
-    .select("*")
+    .select(FLEET_CARD_COLUMNS)
     .eq("category", v.category)
     .eq("is_active", true)
     .neq("slug", v.slug)
     .limit(3);
 
-  const relatedVehicles: Fleet[] = related || [];
+  const relatedVehicles = (related || []) as unknown as Fleet[];
 
   return (
     <>
@@ -67,15 +80,18 @@ export default async function VehicleDetailPage({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Image */}
             <div className="h-[300px] md:h-[400px] bg-[var(--gt-navy-dark)] flex items-center justify-center overflow-hidden">
-              {v.images && v.images.length > 0 ? (
-                <img src={v.images[0]} alt={v.name} className="w-full h-full object-cover" />
+              {v.images?.[0] ? (
+                <Image
+                  src={v.images[0]}
+                  alt={v.name}
+                  width={800}
+                  height={400}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <svg width="120" height="60" viewBox="0 0 120 60" fill="none" stroke="white" strokeWidth="1" opacity="0.15">
-                  <rect x="15" y="22" width="90" height="22" rx="4" />
-                  <circle cx="35" cy="48" r="7" />
-                  <circle cx="85" cy="48" r="7" />
-                  <path d="M82 22V12H48v10" />
-                </svg>
+                <VehicleSilhouette className="text-white" />
               )}
             </div>
 
@@ -289,7 +305,15 @@ export default async function VehicleDetailPage({
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {v.images.slice(1).map((img: string, i: number) => (
                       <div key={i} className="h-40 bg-[var(--gt-cream)] overflow-hidden">
-                        <img src={img} alt={`${v.name} ${i + 2}`} className="w-full h-full object-cover" />
+                        <Image
+                          src={img}
+                          alt={`${v.name} ${i + 2}`}
+                          width={400}
+                          height={160}
+                          sizes="(max-width: 768px) 50vw, 33vw"
+                          loading="lazy"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     ))}
                   </div>

@@ -1,9 +1,11 @@
+import { yearsOfService } from "@/lib/brand";
+
 const clients = ["TUV SUD", "Brigade Group", "Govt. of Karnataka", "New Mangalore Port Authority"];
 
 const reasons = [
   {
     number: "01",
-    title: "37+ Years of Trust",
+    title: `${yearsOfService()} Years of Trust`,
     description: "Serving South India since 1987 with an impeccable safety record and thousands of satisfied clients.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

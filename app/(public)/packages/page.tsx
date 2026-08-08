@@ -1,26 +1,27 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient, PACKAGE_CARD_COLUMNS } from "@/lib/supabase/public";
 import type { Package } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import PackageCard from "@/components/packages/PackageCard";
 import PackageFilter from "./PackageFilter";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/packages" },
   title: "Travel Packages",
   description:
     "Explore our curated travel packages including pilgrimage tours, outstation trips, airport transfers, and corporate transport. Golden Travels, Bengaluru.",
 };
 
 export default async function PackagesPage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: packages } = await supabase
     .from("packages")
-    .select("*")
+    .select(PACKAGE_CARD_COLUMNS)
     .eq("is_active", true)
     .order("created_at", { ascending: false });
 
-  const pkgs: Package[] = packages || [];
+  const pkgs = (packages || []) as unknown as Package[];
 
   return (
     <>

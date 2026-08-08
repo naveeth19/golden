@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient, PACKAGE_CARD_COLUMNS } from "@/lib/supabase/public";
 import type { Package } from "@/lib/supabase/types";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,15 +12,18 @@ const typeColors: Record<string, string> = {
 };
 
 export default async function PackagesGrid() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: packages } = await supabase
     .from("packages")
-    .select("*")
+    .select(PACKAGE_CARD_COLUMNS)
     .eq("is_featured", true)
     .eq("is_active", true)
     .limit(3);
 
-  const pkgs: Package[] = packages || [];
+  const pkgs = (packages || []) as unknown as Package[];
+
+  // Nothing featured — render nothing rather than an empty-state message.
+  if (pkgs.length === 0) return null;
 
   return (
     <section className="py-20 bg-white">
@@ -34,11 +37,8 @@ export default async function PackagesGrid() {
           </h2>
         </div>
 
-        {pkgs.length === 0 ? (
-          <p className="text-center text-[var(--gt-muted)] text-sm">No featured packages at the moment.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pkgs.map((pkg) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pkgs.map((pkg) => (
               <div key={pkg.id} className="border border-[var(--gt-border)] overflow-hidden group">
                 <div className="relative min-h-[160px]">
                   {pkg.cover_image ? (
@@ -94,8 +94,7 @@ export default async function PackagesGrid() {
                 </div>
               </div>
             ))}
-          </div>
-        )}
+        </div>
       </div>
     </section>
   );

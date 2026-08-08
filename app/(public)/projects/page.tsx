@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/projects" },
   title: "Projects — Golden Experiences",
   description: "Curated one-of-a-kind experiences designed by Golden Travels. Sacred day journeys, international road trips, and moments that stay with you.",
 };

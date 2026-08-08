@@ -9,7 +9,7 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+    .replace(/(^-+|-+$)/g, "");
 }
 
 const categories: FleetCategory[] = ["Sedan", "MPV", "Traveller", "Mini Bus", "SUV"];
@@ -61,10 +61,20 @@ export default function FleetForm({
     e.preventDefault();
     setLoading(true);
 
+    // The slug field is hand-editable, so re-normalise on save. A stray leading
+    // space here becomes a permanently 404ing /fleet/<slug> URL.
+    const cleanSlug = slugify(slug);
+    if (!cleanSlug) {
+      setLoading(false);
+      alert("Slug cannot be empty.");
+      return;
+    }
+    setSlug(cleanSlug);
+
     const supabase = createClient();
     const payload = {
       name,
-      slug,
+      slug: cleanSlug,
       category,
       capacity,
       features,

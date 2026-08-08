@@ -11,14 +11,16 @@ export default function Preloader() {
       return;
     }
     document.body.style.overflow = "hidden";
+    // ~1.2s total: 900ms hold + 300ms fade. The page is statically prerendered,
+    // so this is a brand moment, not a load indicator — keep it short.
     const hideTimer = setTimeout(() => {
       setHiding(true);
       setTimeout(() => {
         setHidden(true);
         sessionStorage.setItem("gt-loaded", "1");
         document.body.style.overflow = "";
-      }, 600);
-    }, 3200);
+      }, 300);
+    }, 900);
     return () => {
       clearTimeout(hideTimer);
       document.body.style.overflow = "";
@@ -38,7 +40,7 @@ export default function Preloader() {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
-        transition: "opacity 0.6s ease, transform 0.6s ease",
+        transition: "opacity 0.3s ease, transform 0.3s ease",
         opacity: hiding ? 0 : 1,
         transform: hiding ? "scale(1.03)" : "scale(1)",
         pointerEvents: hiding ? "none" : "all",
@@ -84,7 +86,7 @@ export default function Preloader() {
           letter-spacing: -4px;
           line-height: 1;
           position: relative;
-          animation: gt-reveal 1.2s ease both;
+          animation: gt-reveal 0.5s ease both;
           user-select: none;
         }
         .gt-fill {
@@ -99,40 +101,40 @@ export default function Preloader() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           clip-path: inset(100% 0 0 0);
-          animation: gt-fill 1.4s cubic-bezier(0.77,0,0.18,1) 0.3s forwards;
+          animation: gt-fill 0.55s cubic-bezier(0.77,0,0.18,1) 0.12s forwards;
         }
         .gt-rule-line {
           height: 1px;
           background: rgba(196,30,58,0.25);
-          animation: gt-rule 0.8s ease 1.2s both;
+          animation: gt-rule 0.32s ease 0.48s both;
         }
         .gt-dot-el {
           width: 4px; height: 4px;
           background: #C41E3A; border-radius: 50%;
-          animation: gt-dot 0.4s ease 1.6s both;
+          animation: gt-dot 0.16s ease 0.64s both;
         }
         .gt-brand {
           font-family: var(--font-playfair), Georgia, serif;
           font-size: 15px; font-weight: 900;
           color: #fff; letter-spacing: 0.22em; text-transform: uppercase;
-          animation: gt-fadeup 0.6s ease 1.4s both;
+          animation: gt-fadeup 0.24s ease 0.56s both;
         }
         .gt-since {
           font-size: 9px; font-weight: 300;
           color: rgba(255,255,255,0.28);
           letter-spacing: 0.26em; text-transform: uppercase;
           margin-top: 5px;
-          animation: gt-fadeup 0.6s ease 1.55s both;
+          animation: gt-fadeup 0.24s ease 0.62s both;
         }
         .gt-progress-wrap {
           width: 100px; height: 1px;
           background: rgba(255,255,255,0.07);
           margin-top: 28px; position: relative;
-          animation: gt-fadeup 0.6s ease 1.7s both;
+          animation: gt-fadeup 0.2s ease 0.6s both;
         }
         .gt-progress-fill {
           height: 1px; background: #C41E3A; width: 0%;
-          animation: gt-progress 2s ease-in-out 1.8s forwards;
+          animation: gt-progress 0.5s ease-in-out 0.35s forwards;
           position: relative;
         }
         .gt-progress-fill::after {
@@ -146,7 +148,7 @@ export default function Preloader() {
           position: absolute; bottom: 0; left: -100%;
           width: 100%; height: 2px;
           background: linear-gradient(90deg, transparent, #C41E3A, transparent);
-          animation: gt-road 1.8s linear infinite;
+          animation: gt-road 0.9s linear infinite;
         }
         .gt-corner {
           position: absolute;
@@ -187,8 +189,8 @@ export default function Preloader() {
                 <animate 
                   attributeName="height" 
                   from="0" to="120" 
-                  dur="1.4s" 
-                  begin="0.3s" 
+                  dur="0.55s" 
+                  begin="0.12s" 
                   fill="freeze"
                   calcMode="spline"
                   keySplines="0.77 0 0.18 1"
@@ -208,7 +210,7 @@ export default function Preloader() {
             stroke="rgba(196,30,58,0.2)"
             strokeWidth="0.8"
             letterSpacing="-4"
-            style={{animation: "gt-reveal 1.2s ease both"}}
+            style={{animation: "gt-reveal 0.5s ease both"}}
           >GT</text>
           
           {/* Fill layer — clips upward */}

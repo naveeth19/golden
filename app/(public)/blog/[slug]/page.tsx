@@ -1,4 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
+import {
+  createPublicClient,
+  BLOG_CARD_COLUMNS,
+  BLOG_DETAIL_COLUMNS,
+} from "@/lib/supabase/public";
 import type { Blog } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -6,10 +10,16 @@ import { format } from "date-fns";
 import BlogContent from "@/components/blog/BlogContent";
 import BlogCard from "@/components/blog/BlogCard";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return [];
+  const supabase = createPublicClient();
+  const { data } = await supabase
+    .from("blogs")
+    .select("slug")
+    .eq("is_published", true);
+
+  return (data || []).map(({ slug }) => ({ slug: (slug as string).trim() }));
 }
 
 export async function generateMetadata({
@@ -18,16 +28,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: blog } = await supabase
     .from("blogs")
-    .select("*")
+    .select(BLOG_DETAIL_COLUMNS)
     .eq("slug", slug)
-    .single();
+    .single<Blog>();
 
   if (!blog) return { title: "Post Not Found" };
 
   return {
+    alternates: { canonical: `/blog/${slug}` },
     title: blog.meta_title || blog.title,
     description: blog.meta_desc || blog.content?.replace(/<[^>]*>/g, "").slice(0, 160),
   };
@@ -67,29 +78,29 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data: blog } = await supabase
     .from("blogs")
-    .select("*")
+    .select(BLOG_DETAIL_COLUMNS)
     .eq("slug", slug)
-    .single();
+    .single<Blog>();
 
   if (!blog) notFound();
 
-  const b = blog as Blog;
+  const b = blog;
 
   // Related posts by matching tags
   let relatedPosts: Blog[] = [];
   if (b.tags && b.tags.length > 0) {
     const { data: related } = await supabase
       .from("blogs")
-      .select("*")
+      .select(BLOG_CARD_COLUMNS)
       .eq("is_published", true)
       .neq("slug", b.slug)
       .overlaps("tags", b.tags)
       .limit(3);
-    relatedPosts = (related || []) as Blog[];
+    relatedPosts = (related || []) as unknown as Blog[];
   }
 
   return (

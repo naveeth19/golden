@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { yearsOfService } from "@/lib/brand";
+
 const services = [
   "Outstation Rentals",
   "Airport Services",
@@ -10,7 +12,7 @@ const services = [
 ];
 
 const stats = [
-  { value: "37+", label: "Years" },
+  { value: String(yearsOfService()), label: "Years" },
   { value: "88+", label: "Vehicles" },
   { value: "500+", label: "Clients" },
   { value: "4.9", label: "Rating" },

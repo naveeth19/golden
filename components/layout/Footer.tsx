@@ -27,8 +27,8 @@ export default function Footer() {
                 </a>
               </p>
               <p>
-                <a href="mailto:goldentravels@rediffmail.com" className="hover:text-[var(--gt-red)] transition-colors">
-                  goldentravels@rediffmail.com
+                <a href="mailto:naveeth@goldentravels.co" className="hover:text-[var(--gt-red)] transition-colors">
+                  naveeth@goldentravels.co
                 </a>
               </p>
             </div>

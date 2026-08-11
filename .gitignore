@@ -48,3 +48,7 @@ skills-lock.json
 
 # Stray duplicate of public/bali-trip.html (1.7MB)
 bali_trip*.html
+
+# Source camera originals for the TT segment (46MB). The optimised WebP
+# derivatives in public/fleet/ are what ship — keep originals out of git.
+TT_Images/

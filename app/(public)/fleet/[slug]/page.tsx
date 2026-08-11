@@ -6,21 +6,130 @@ import {
 import type { Fleet } from "@/lib/supabase/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
-import { waLink } from "@/lib/wa";
-import FleetCard from "@/components/fleet/FleetCard";
+import Gallery, { type GalleryImage } from "@/components/tt/Gallery";
+import StickyBar from "@/components/tt/StickyBar";
+import CtaPair from "@/components/tt/CtaPair";
 import VehicleSilhouette from "@/components/fleet/VehicleSilhouette";
+import {
+  getTtVehicle,
+  TT_SLUGS,
+  TT_VEHICLES,
+  WA_MESSAGES,
+  RATE_DISCLAIMER,
+  type TtVehicle,
+} from "@/lib/tt/content";
 
+export const dynamic = "force-static";
 export const revalidate = 3600;
 
-export async function generateStaticParams() {
+const SITE = "https://www.goldentravels.co";
+const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
+
+/**
+ * Vehicle detail — one template, two data sources:
+ *  - TT segment slugs come from lib/tt/content.ts with local WebP galleries
+ *  - every other slug is DB-driven, as before
+ */
+
+/* ── Normalised view model ─────────────────────────────────────────────── */
+
+interface VehicleView {
+  slug: string;
+  name: string;
+  tier: string;
+  seats: number;
+  seatsLabel: string;
+  images: GalleryImage[];
+  features: string[];
+  idealFor: string[];
+  description: string | null;
+  rateFromLabel: string;
+  rate8hr80km: number | null;
+  extraHourRate: number | null;
+  extraKmRate: number | null;
+  outstationKmRate: number | null;
+  driverBata: number | null;
+  minKmPerDay: number | null;
+  luggage: string | null;
+}
+
+function fromTt(v: TtVehicle): VehicleView {
+  return {
+    slug: v.slug,
+    name: v.name,
+    tier: v.tier,
+    seats: v.seats,
+    seatsLabel: v.seatsLabel,
+    images: v.images.map((img, i) => ({
+      ...img,
+      alt: `${v.name} — ${img.kind.toLowerCase()} photo ${i + 1}`,
+    })),
+    features: v.features,
+    idealFor: v.idealFor,
+    description: null,
+    rateFromLabel: `${inr(v.outstationKmRate)}/km`,
+    rate8hr80km: v.rate8hr80km,
+    extraHourRate: v.extraHourRate,
+    extraKmRate: v.extraKmRate,
+    outstationKmRate: v.outstationKmRate,
+    driverBata: v.driverBata,
+    minKmPerDay: v.minKmPerDay,
+    luggage: v.luggage,
+  };
+}
+
+function fromDb(v: Fleet): VehicleView {
+  return {
+    slug: v.slug,
+    name: v.name,
+    tier: v.category,
+    seats: v.capacity,
+    seatsLabel: String(v.capacity),
+    images: (v.images || []).map((src, i) => ({
+      src,
+      w: 1400,
+      h: 900,
+      alt: `${v.name} photo ${i + 1}`,
+    })),
+    features: v.features || [],
+    idealFor: [],
+    description: v.description || null,
+    rateFromLabel: v.price_local_8hr > 0 ? inr(v.price_local_8hr) : "On request",
+    rate8hr80km: v.price_local_8hr > 0 ? v.price_local_8hr : null,
+    extraHourRate: v.price_extra_hour > 0 ? v.price_extra_hour : null,
+    extraKmRate: v.price_extra_km > 0 ? v.price_extra_km : null,
+    outstationKmRate: v.price_outstation_km > 0 ? v.price_outstation_km : null,
+    driverBata: v.price_driver_batta > 0 ? v.price_driver_batta : null,
+    minKmPerDay: null,
+    luggage: null,
+  };
+}
+
+async function loadVehicle(
+  slug: string
+): Promise<{ view: VehicleView; isTt: boolean } | null> {
+  const tt = getTtVehicle(slug);
+  if (tt) return { view: fromTt(tt), isTt: true };
+
   const supabase = createPublicClient();
   const { data } = await supabase
     .from("fleet")
-    .select("slug")
-    .eq("is_active", true);
+    .select(FLEET_DETAIL_COLUMNS)
+    .eq("slug", slug)
+    .single<Fleet>();
+  if (!data) return null;
+  return { view: fromDb(data), isTt: false };
+}
 
-  return (data || []).map(({ slug }) => ({ slug: (slug as string).trim() }));
+/* ── Static params & metadata ──────────────────────────────────────────── */
+
+export async function generateStaticParams() {
+  const supabase = createPublicClient();
+  const { data } = await supabase.from("fleet").select("slug").eq("is_active", true);
+  const dbSlugs = (data || []).map(({ slug }) => (slug as string).trim());
+  return [...new Set([...dbSlugs, ...TT_SLUGS])].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -29,21 +138,22 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const supabase = createPublicClient();
-  const { data: vehicle } = await supabase
-    .from("fleet")
-    .select(FLEET_DETAIL_COLUMNS)
-    .eq("slug", slug)
-    .single<Fleet>();
+  const loaded = await loadVehicle(slug);
+  if (!loaded) return { title: "Vehicle Not Found" };
+  const v = loaded.view;
 
-  if (!vehicle) return { title: "Vehicle Not Found" };
+  const description = loaded.isTt
+    ? `Rent a ${v.name} in Bangalore — ${inr(v.outstationKmRate!)}/km outstation, ${inr(v.rate8hr80km!)} for 8hr/80km local. AC, chauffeur-driven, all-India permit. Golden Travels, since 1987.`
+    : `Rent ${v.name} (${v.seats} seater ${v.tier}) in Bengaluru. Features: ${v.features.join(", ")}. Book with Golden Travels.`;
 
   return {
+    title: `${v.name} Rental in Bengaluru`,
+    description,
     alternates: { canonical: `/fleet/${slug}` },
-    title: `${vehicle.name} Rental in Bengaluru`,
-    description: `Rent ${vehicle.name} (${vehicle.capacity} seater ${vehicle.category}) in Bengaluru. Features: ${(vehicle.features || []).join(", ")}. Book with Golden Travels.`,
   };
 }
+
+/* ── Page ──────────────────────────────────────────────────────────────── */
 
 export default async function VehicleDetailPage({
   params,
@@ -51,330 +161,262 @@ export default async function VehicleDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const supabase = createPublicClient();
-  const { data: vehicle } = await supabase
-    .from("fleet")
-    .select(FLEET_DETAIL_COLUMNS)
-    .eq("slug", slug)
-    .single<Fleet>();
+  const loaded = await loadVehicle(slug);
+  if (!loaded) notFound();
+  const v = loaded.view;
 
-  if (!vehicle) notFound();
+  // Related: sibling TT vehicles on TT pages; same DB category otherwise.
+  let related: { slug: string; name: string; img: string | null; sub: string }[] = [];
+  if (loaded.isTt) {
+    related = TT_VEHICLES.filter((x) => x.slug !== slug)
+      .slice(0, 3)
+      .map((x) => ({
+        slug: x.slug,
+        name: x.name,
+        img: x.card.src,
+        sub: `${x.seatsLabel} seats · from ${inr(x.outstationKmRate)}/km`,
+      }));
+  } else {
+    const supabase = createPublicClient();
+    const { data } = await supabase
+      .from("fleet")
+      .select(FLEET_CARD_COLUMNS)
+      .eq("category", v.tier)
+      .eq("is_active", true)
+      .neq("slug", slug)
+      .limit(3);
+    related = ((data || []) as unknown as Fleet[]).map((x) => ({
+      slug: x.slug,
+      name: x.name,
+      img: x.images?.[0] || null,
+      sub: `${x.capacity} seater`,
+    }));
+  }
 
-  const v = vehicle;
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Golden Travels", item: SITE },
+      { "@type": "ListItem", position: 2, name: "Fleet", item: `${SITE}/fleet` },
+      { "@type": "ListItem", position: 3, name: v.name, item: `${SITE}/fleet/${v.slug}` },
+    ],
+  };
 
-  const { data: related } = await supabase
-    .from("fleet")
-    .select(FLEET_CARD_COLUMNS)
-    .eq("category", v.category)
-    .eq("is_active", true)
-    .neq("slug", v.slug)
-    .limit(3);
-
-  const relatedVehicles = (related || []) as unknown as Fleet[];
+  const specParts = [
+    `${v.seats} guests`,
+    `${v.seatsLabel} seats`,
+    ...(v.luggage ? [v.luggage] : []),
+    "AC",
+  ];
 
   return (
-    <>
-      {/* Hero */}
-      <section className="bg-[var(--gt-navy)]">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Image */}
-            <div className="h-[300px] md:h-[400px] bg-[var(--gt-navy-dark)] flex items-center justify-center overflow-hidden">
-              {v.images?.[0] ? (
-                <Image
-                  src={v.images[0]}
-                  alt={v.name}
-                  width={800}
-                  height={400}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <VehicleSilhouette className="text-white" />
-              )}
-            </div>
+    <div className="pb-[calc(72px+env(safe-area-inset-bottom))]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
 
-            {/* Info */}
-            <div className="flex flex-col justify-center">
-              <span className="inline-block bg-[var(--gt-red)] text-white text-[10px] uppercase tracking-wider font-semibold px-3 py-1 w-fit mb-4">
-                {v.category}
-              </span>
-              <h1
-                className="text-3xl md:text-4xl font-bold text-white mb-4"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                {v.name}
-              </h1>
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="border border-white/10 p-4 text-center">
-                  <div className="text-white text-lg font-bold">{v.capacity}</div>
-                  <div className="text-white/40 text-xs uppercase">Seater</div>
-                </div>
-                <div className="border border-white/10 p-4 text-center">
-                  <div className="text-white text-lg font-bold">AC</div>
-                  <div className="text-white/40 text-xs uppercase">Climate</div>
-                </div>
-                <div className="border border-white/10 p-4 text-center">
-                  <div className="text-white text-lg font-bold">{(v.features || []).length}</div>
-                  <div className="text-white/40 text-xs uppercase">Features</div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {(v.features || []).map((f: string) => (
-                  <span key={f} className="text-xs px-3 py-1 border border-white/20 text-white/60">
-                    {f}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* Gallery at top — full bleed, swipeable, CSS scroll-snap */}
+      {v.images.length > 0 ? (
+        <Gallery images={v.images} title={v.name} />
+      ) : (
+        <div className="h-[280px] bg-[var(--gt-navy)] flex items-center justify-center text-white">
+          <VehicleSilhouette />
         </div>
-      </section>
+      )}
 
-      {/* Content + Sidebar */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Content */}
-            <div className="lg:col-span-2">
-              <h2
-                className="text-2xl font-bold text-[var(--gt-navy)] mb-4"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                About {v.name}
-              </h2>
-              <p className="text-[var(--gt-muted)] text-sm leading-relaxed whitespace-pre-line">
-                {v.description || `The ${v.name} is a premium ${v.category} vehicle available for rent in Bengaluru. With a seating capacity of ${v.capacity} passengers, it is ideal for both short city rides and long outstation trips. All our vehicles are well-maintained, regularly serviced, and driven by experienced professionals.`}
-              </p>
-
-              {/* Pricing */}
-              <div className="mt-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-xs font-bold text-[var(--gt-red)] uppercase tracking-wider">Transparent Rates</span>
-                  <div className="h-px bg-[var(--gt-border)] flex-1" />
-                </div>
-                <h2
-                  className="text-2xl font-bold text-[var(--gt-navy)] mb-6"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  Pricing
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Local Card */}
-                  <div className="bg-white border border-[var(--gt-border)] p-6 border-l-4 border-l-[var(--gt-red)]">
-                    <h3
-                      className="text-lg font-bold text-[var(--gt-navy)] mb-4"
-                      style={{ fontFamily: "var(--font-playfair)" }}
-                    >
-                      Local Package
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">8 Hrs / 80 Km</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_local_8hr.toLocaleString("en-IN")}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">Extra km</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_extra_km.toLocaleString("en-IN")} / km
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">Extra hour</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_extra_hour.toLocaleString("en-IN")} / hr
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Outstation Card */}
-                  <div className="bg-white border border-[var(--gt-border)] p-6 border-l-4 border-l-[var(--gt-red)]">
-                    <h3
-                      className="text-lg font-bold text-[var(--gt-navy)] mb-4"
-                      style={{ fontFamily: "var(--font-playfair)" }}
-                    >
-                      Outstation
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">Per km</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_outstation_km.toLocaleString("en-IN")} / km
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">Driver Batta</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_driver_batta.toLocaleString("en-IN")} / day
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-[var(--gt-muted)] mt-3">
-                      Minimum 300 km per trip applies
-                    </p>
-                  </div>
-
-                  {/* Airport Card */}
-                  <div className="bg-white border border-[var(--gt-border)] p-6 border-l-4 border-l-[var(--gt-red)]">
-                    <h3
-                      className="text-lg font-bold text-[var(--gt-navy)] mb-4"
-                      style={{ fontFamily: "var(--font-playfair)" }}
-                    >
-                      Airport Transfer
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[var(--gt-muted)]">Flat rate</span>
-                        <span
-                          className="text-lg font-bold text-[var(--gt-navy)]"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          ₹{v.price_airport.toLocaleString("en-IN")}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-[var(--gt-muted)] mt-3">
-                      One way · BLR Airport
-                    </p>
-                  </div>
-                </div>
-
-                {/* Additional Charges Box */}
-                <div className="mt-8 bg-white border border-[var(--gt-border)] border-l-4 border-l-[var(--gt-red)] p-5">
-                  <h4 className="text-[11px] uppercase text-[var(--gt-red)] font-bold tracking-[0.14em] mb-2.5">
-                    Additional Charges
-                  </h4>
-                  <div className="space-y-2 text-[13px] text-[var(--gt-muted)] leading-[1.8]" style={{ fontFamily: "DM Sans, sans-serif" }}>
-                    <div className="flex items-start gap-2">
-                      <span className="text-red-500 mt-0.5">■</span>
-                      <span>Toll & parking charges extra at actuals</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-red-500 mt-0.5">■</span>
-                      <span>Night / early morning batta applicable for driving between 10:00 PM – 7:00 AM</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Indicative Prices Box */}
-                <div className="mt-4 bg-white border border-[var(--gt-border)] border-l-4 border-l-[var(--gt-red)] p-5">
-                  <p className="text-[13px] text-[var(--gt-muted)] leading-[1.8]" style={{ fontFamily: "DM Sans, sans-serif" }}>
-                    Prices are indicative. Final quote depends on trip duration, distance, and toll charges. Contact us for a confirmed rate.
-                  </p>
-                </div>
-
-                {/* WhatsApp CTA */}
-                <div className="mt-6">
-                  <a
-                    href={waLink(`Hi, I'd like to know the rate for ${v.name}`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 bg-[var(--gt-red)] text-white text-[11px] uppercase tracking-[0.15em] font-semibold px-6 py-3 hover:bg-[var(--gt-red-dark)] transition-colors"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                    </svg>
-                    Get Exact Quote
-                  </a>
-                </div>
-              </div>
-
-              {/* Gallery */}
-              {v.images && v.images.length > 1 && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-bold text-[var(--gt-navy)] mb-4">Gallery</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {v.images.slice(1).map((img: string, i: number) => (
-                      <div key={i} className="h-40 bg-[var(--gt-cream)] overflow-hidden">
-                        <Image
-                          src={img}
-                          alt={`${v.name} ${i + 2}`}
-                          width={400}
-                          height={160}
-                          sizes="(max-width: 768px) 50vw, 33vw"
-                          loading="lazy"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-[90px] border border-[var(--gt-border)] p-6">
-                <h3
-                  className="text-xl font-bold text-[var(--gt-navy)] mb-1"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  {v.name}
-                </h3>
-                <p className="text-sm text-[var(--gt-muted)] mb-6">Price on request</p>
-                <a
-                  href={waLink(`Hi, I would like to book the ${v.name} (${v.capacity} seater ${v.category}).`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-[var(--gt-red)] text-white text-[11px] uppercase tracking-[0.15em] font-semibold px-6 py-3 hover:bg-[var(--gt-red-dark)] transition-colors mb-3"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
-                  WhatsApp Us
-                </a>
-                <a
-                  href="tel:+919845033877"
-                  className="w-full inline-flex items-center justify-center gap-2 border border-[var(--gt-border)] text-[var(--gt-navy)] text-[11px] uppercase tracking-[0.15em] font-semibold px-6 py-3 hover:bg-[var(--gt-navy)] hover:text-white transition-colors"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  +91 98450 33877
-                </a>
-              </div>
-            </div>
-          </div>
+      <div className="max-w-[1000px] mx-auto px-5">
+        {/* Title + spec line */}
+        <div className="pt-7">
+          <h1
+            className="text-[clamp(1.7rem,4.5vw,2.6rem)] leading-[1.08] tracking-[-0.02em] text-[var(--gt-navy)]"
+            style={{ fontFamily: "var(--font-playfair)" }}
+          >
+            {v.name}
+          </h1>
+          <p className="mt-2.5 text-[14px] text-[var(--gt-muted)]">{specParts.join(" · ")}</p>
         </div>
-      </section>
 
-      {/* Related Vehicles */}
-      {relatedVehicles.length > 0 && (
-        <section className="py-16 bg-[var(--gt-cream)]">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2
-              className="text-2xl font-bold text-[var(--gt-navy)] mb-8"
-              style={{ fontFamily: "var(--font-playfair)" }}
+        {/* Stat row — hairline dividers */}
+        <div className="mt-7 grid grid-cols-3 border-y border-[var(--gt-border)]">
+          {[
+            { label: "Rate from", value: v.rateFromLabel },
+            { label: "Seating", value: `${v.seatsLabel} + driver` },
+            { label: "Tier", value: v.tier },
+          ].map((s, i) => (
+            <div
+              key={s.label}
+              className={`py-5 px-3 text-center ${i > 0 ? "border-l border-[var(--gt-border)]" : ""}`}
             >
-              Similar Vehicles
+              <div
+                className="text-[17px] sm:text-xl text-[var(--gt-navy)] tabular-nums"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
+                {s.value}
+              </div>
+              <div className="mt-1 text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--gt-muted)]">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Details */}
+        <div className="py-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-9">
+          {v.features.length > 0 && (
+            <div>
+              <h2 className="text-[11px] uppercase tracking-[0.2em] text-[var(--gt-red)] font-semibold mb-4">
+                Features
+              </h2>
+              <ul className="space-y-2.5 text-[14px] text-[var(--gt-muted)]">
+                {v.features.map((f) => (
+                  <li key={f} className="flex items-center gap-3">
+                    <span className="w-4 h-px bg-[var(--gt-red)] shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {v.idealFor.length > 0 && (
+            <div>
+              <h2 className="text-[11px] uppercase tracking-[0.2em] text-[var(--gt-red)] font-semibold mb-4">
+                Ideal for
+              </h2>
+              <ul className="space-y-2.5 text-[14px] text-[var(--gt-muted)]">
+                {v.idealFor.map((f) => (
+                  <li key={f} className="flex items-center gap-3">
+                    <span className="w-4 h-px bg-[var(--gt-red)] shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="md:col-span-2">
+            <h2 className="text-[11px] uppercase tracking-[0.2em] text-[var(--gt-red)] font-semibold mb-4">
+              What&apos;s included
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedVehicles.map((rv) => (
-                <FleetCard key={rv.id} vehicle={rv} />
+            <div className="text-[14px] leading-[1.75] text-[var(--gt-muted)]">
+              <p>
+                Chauffeur and fuel are included in the rate.
+                {v.driverBata ? ` Driver bata is ${inr(v.driverBata)} per day.` : ""}
+                {v.minKmPerDay
+                  ? ` Outstation trips are billed on a minimum of ${v.minKmPerDay} km per calendar day.`
+                  : ""}{" "}
+                Tolls, parking and interstate taxes are at actuals.
+              </p>
+              {(v.rate8hr80km || v.extraHourRate || v.extraKmRate) && (
+                <ul className="mt-4 space-y-1.5">
+                  {v.rate8hr80km && (
+                    <li>
+                      Local package (8hr/80km):{" "}
+                      <span className="text-[var(--gt-navy)]">{inr(v.rate8hr80km)}</span>
+                    </li>
+                  )}
+                  {v.extraHourRate && (
+                    <li>
+                      Extra hour: <span className="text-[var(--gt-navy)]">{inr(v.extraHourRate)}</span>
+                    </li>
+                  )}
+                  {v.extraKmRate && (
+                    <li>
+                      Extra km: <span className="text-[var(--gt-navy)]">{inr(v.extraKmRate)}</span>
+                    </li>
+                  )}
+                  {v.outstationKmRate && (
+                    <li>
+                      Outstation:{" "}
+                      <span className="text-[var(--gt-navy)]">{inr(v.outstationKmRate)}/km</span>
+                    </li>
+                  )}
+                </ul>
+              )}
+              <p className="mt-4 text-[12px]">{RATE_DISCLAIMER}</p>
+            </div>
+          </div>
+
+          {v.description && (
+            <div className="md:col-span-2">
+              <h2 className="text-[11px] uppercase tracking-[0.2em] text-[var(--gt-red)] font-semibold mb-4">
+                About this vehicle
+              </h2>
+              <p className="text-[14px] leading-[1.8] text-[var(--gt-muted)] whitespace-pre-line">
+                {v.description}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop CTA (mobile is covered by the sticky bar) */}
+        <div className="hidden lg:block pb-10">
+          <CtaPair
+            section={`detail:${v.slug}`}
+            waMessage={WA_MESSAGES.detail(v.name)}
+            className="max-w-md"
+          />
+        </div>
+
+        {/* Related */}
+        {related.length > 0 && (
+          <div className="border-t border-[var(--gt-border)] py-10">
+            <h2 className="text-[11px] uppercase tracking-[0.2em] text-[var(--gt-red)] font-semibold mb-6">
+              Similar vehicles
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {related.map((r) => (
+                <Link key={r.slug} href={`/fleet/${r.slug}`} className="group border border-[var(--gt-border)]">
+                  <div className="relative aspect-[16/10] bg-[var(--gt-cream)] overflow-hidden">
+                    {r.img ? (
+                      <Image
+                        src={r.img}
+                        alt={r.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                        loading="lazy"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[var(--gt-navy)]">
+                        <VehicleSilhouette />
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3
+                      className="text-[15px] text-[var(--gt-navy)] group-hover:text-[var(--gt-red)] transition-colors"
+                      style={{ fontFamily: "var(--font-playfair)" }}
+                    >
+                      {r.name}
+                    </h3>
+                    <p className="mt-1 text-[12px] text-[var(--gt-muted)]">{r.sub}</p>
+                  </div>
+                </Link>
               ))}
             </div>
+            {loaded.isTt && (
+              <p className="mt-6 text-[13px]">
+                <Link
+                  href="/tempo-traveller-rental-bangalore"
+                  className="text-[var(--gt-red)] hover:underline"
+                >
+                  ← All tempo traveller &amp; Urbania rates
+                </Link>
+              </p>
+            )}
           </div>
-        </section>
-      )}
-    </>
+        )}
+      </div>
+
+      {/* Sticky bottom bar — rate left, CTA pair right, always visible on mobile */}
+      <StickyBar
+        section={`detail:${v.slug}`}
+        waMessage={WA_MESSAGES.detail(v.name)}
+        rateLabel={v.rateFromLabel}
+      />
+    </div>
   );
 }

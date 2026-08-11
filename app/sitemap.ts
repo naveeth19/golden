@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { createPublicClient } from "@/lib/supabase/public";
+import { TT_SLUGS, SEGMENT } from "@/lib/tt/content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createPublicClient();
@@ -16,11 +17,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // /projects/south-africa-season-2 is deliberately omitted — it is disabled
     // and redirects to /projects.
     { url: `${baseUrl}/projects/the-shiva-day`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    // Google Ads landing page — also an organic asset.
+    { url: `${baseUrl}${SEGMENT.landingPath}`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
   ];
 
   const { data: fleet } = await supabase.from("fleet").select("slug").eq("is_active", true);
-  const fleetPages: MetadataRoute.Sitemap = (fleet || []).map((v) => ({
-    url: `${baseUrl}/fleet/${v.slug.trim()}`,
+  const dbFleetSlugs = (fleet || []).map((v) => v.slug.trim());
+  // TT segment slugs are content-defined, not DB rows — merge and dedupe.
+  const fleetPages: MetadataRoute.Sitemap = [...new Set([...dbFleetSlugs, ...TT_SLUGS])].map((slug) => ({
+    url: `${baseUrl}/fleet/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.9,

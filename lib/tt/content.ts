@@ -112,11 +112,11 @@ export const TT_VEHICLES: TtVehicle[] = [
     tier: "Luxury",
     seats: 9,
     seatsLabel: "9",
-    rate8hr80km: 9000,
-    extraHourRate: 600,
-    extraKmRate: 45,
-    outstationKmRate: 45,
-    driverBata: 800,
+    rate8hr80km: 5000,
+    extraHourRate: 450,
+    extraKmRate: 28,
+    outstationKmRate: 28,
+    driverBata: 600,
     minKmPerDay: 300,
     features: ["Air conditioned", "Pushback seats", "Extra legroom", "Curtains", "All-India tourist permit"],
     idealFor: ["Small groups wanting space", "Senior-friendly travel", "Temple circuits", "Airport groups with luggage"],
@@ -140,10 +140,12 @@ export const TT_VEHICLES: TtVehicle[] = [
     tier: "Luxury",
     seats: 9,
     seatsLabel: "9",
+    // Revised by client 12 Aug 2026: extra hour 550 -> 600, per km 40 -> 45.
+    // Supersedes the original tariff sheet row.
     rate8hr80km: 9000,
-    extraHourRate: 550,
-    extraKmRate: 40,
-    outstationKmRate: 40,
+    extraHourRate: 600,
+    extraKmRate: 45,
+    outstationKmRate: 45,
     driverBata: 800,
     minKmPerDay: 300,
     features: ["Air conditioned", "Pushback captain seats", "Monocoque body", "USB charging", "All-India tourist permit"],
@@ -262,7 +264,7 @@ export const TT_FAQS: TtFaq[] = [
     q: "What is the tempo traveller rate per km in Bangalore?",
     a: [
       "Tempo traveller rates in Bangalore start from ₹21 per km for a Regular 12 seater with Golden Travels.",
-      "Luxury tempo travellers with pushback seats run ₹30 to ₹45 per km depending on the layout, and Force Urbania vans are ₹40 to ₹50 per km depending on the variant. Outstation trips are billed on a minimum of 300 km per day, plus driver bata. Tolls and parking are at actuals.",
+      "Luxury tempo travellers with pushback seats are ₹28 to ₹30 per km depending on the layout, and Force Urbania vans run ₹42 to ₹50 per km depending on the variant. Outstation trips are billed on a minimum of 300 km per day, plus driver bata. Tolls and parking are at actuals.",
     ],
   },
   {
@@ -276,7 +278,7 @@ export const TT_FAQS: TtFaq[] = [
     q: "What is the difference between a tempo traveller and a Force Urbania?",
     a: [
       "The Urbania is Force Motors' newer monocoque van — quieter, more stable at highway speeds, and more car-like to ride in than a traditional tempo traveller.",
-      "A traditional TT is built on a ladder-frame chassis and seats more people per vehicle, which makes it the practical choice for large groups and pilgrimage circuits. Compare the two on the rate table above rather than assuming one is always cheaper — at 9 seats the Urbania actually undercuts the equivalent luxury tempo traveller, while at 12 seats the tempo traveller is the more economical option.",
+      "A traditional TT is built on a ladder-frame chassis and costs considerably less to run — ₹21 to ₹30 per km against ₹42 to ₹50 for an Urbania — which makes it the practical choice for large groups, pilgrimage circuits and longer routes where the distance does the damage. The Urbania is worth the premium when ride quality matters: executive travel, client movements, and anyone who will be in the vehicle for six hours straight.",
     ],
   },
   {

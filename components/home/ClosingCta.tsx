@@ -52,11 +52,11 @@ export default function ClosingCta() {
             </a>
 
             <a
-              href="tel:+919902933877"
+              href="tel:+919845033877"
               className="group flex items-center justify-between gap-4 border border-white/15 hover:border-[var(--gt-red)] px-6 py-5 transition-colors duration-300"
             >
               <span className="text-[11px] uppercase tracking-[0.16em] text-white tabular-nums">
-                +91 99029 33877
+                +91 98450 33877
               </span>
               <span className="w-8 h-px bg-white/40 group-hover:w-12 group-hover:bg-[var(--gt-red)] transition-all duration-300" />
             </a>

@@ -40,8 +40,8 @@ export interface TtVehicle {
 }
 
 export const WA_NUMBER = "919902933877";
-export const PHONE_DISPLAY = "+91 99029 33877";
-export const TEL_HREF = "tel:+919902933877";
+export const PHONE_DISPLAY = "+91 98450 33877";
+export const TEL_HREF = "tel:+919845033877";
 
 export const SEGMENT = {
   h1: "Tempo Traveller & Urbania Rental in Bangalore",

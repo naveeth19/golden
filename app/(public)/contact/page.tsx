@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
   title: "Contact Us",
   description:
-    "Get in touch with Golden Travels for bookings, enquiries, and travel assistance. Visit us at Rajajinagar, Bengaluru or call +91 99029 33877.",
+    "Get in touch with Golden Travels for bookings, enquiries, and travel assistance. Visit us at Rajajinagar, Bengaluru or call +91 98450 33877.",
 };
 
 export default function ContactPage() {
@@ -66,8 +66,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-[var(--gt-navy)] mb-1">Phone</h3>
-                    <a href="tel:+919902933877" className="text-sm text-[var(--gt-red)] hover:underline">
-                      +91 99029 33877
+                    <a href="tel:+919845033877" className="text-sm text-[var(--gt-red)] hover:underline">
+                      +91 98450 33877
                     </a>
                   </div>
                 </div>

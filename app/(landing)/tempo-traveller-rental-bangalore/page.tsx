@@ -48,7 +48,7 @@ function SchemaJsonLd() {
     name: "Tempo Traveller & Urbania Rental",
     serviceType: "Van rental with driver",
     areaServed: { "@type": "City", name: "Bengaluru" },
-    provider: { "@type": "LocalBusiness", name: "Golden Travels", telephone: "+919902933877" },
+    provider: { "@type": "LocalBusiness", name: "Golden Travels", telephone: "+919845033877" },
   };
   const products = TT_VEHICLES.map((v) => ({
     "@context": "https://schema.org",

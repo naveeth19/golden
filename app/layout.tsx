@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -116,6 +117,18 @@ export default function RootLayout({
         {children}
         <Toaster />
         <JsonLd />
+        {/* Google Ads tag (gtag.js). afterInteractive keeps it off the
+            critical rendering path. */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17708555151"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-17708555151');`}
+        </Script>
       </body>
     </html>
   );

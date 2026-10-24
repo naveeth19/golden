@@ -1,0 +1,235 @@
+/* TripOS marketing page. Everything is scoped under .tp so nothing leaks into
+   the Golden Travels site, even though App Router loads this as global CSS. */
+
+/* Inside @layer components so Tailwind utilities (hidden, sm:inline-flex …)
+   can still override these classes — unlayered CSS would always win. */
+@layer components {
+.tp {
+  --tp-navy: #14213d;
+  --tp-ink: #172033;
+  --tp-paper: #faf9f6;
+  --tp-white: #ffffff;
+  --tp-gold: #c99a45;
+  --tp-gold-ink: #8a6420; /* gold dark enough for text on light (≥4.5:1) */
+  --tp-slate: #5b6b80;
+  --tp-line: #e7e8ec;
+  --tp-green: #2f8a5b;
+  --tp-green-bg: #e9f5ee;
+  --tp-amber-bg: #fbf3e4;
+  /* The Golden Travels site sets --radius: 0 (square aesthetic) and Tailwind's
+     rounded-* scale derives from it. TripOS restores a radius in its scope. */
+  --radius: 0.625rem;
+
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  background: var(--tp-paper);
+  color: var(--tp-ink);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+.tp section[id] { scroll-margin-top: 80px; }
+
+/* Focus: always visible for keyboard users, gold on navy, navy on light. */
+.tp :focus-visible {
+  outline: 2px solid var(--tp-gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+.tp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.15rem;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 550;
+  letter-spacing: -0.005em;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+.tp-btn:active { transform: translateY(1px); }
+.tp-btn-primary {
+  background: var(--tp-navy);
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 1px 2px rgba(20, 33, 61, 0.2);
+}
+.tp-btn-primary:hover { background: #0d172d; }
+.tp-btn-gold {
+  background: var(--tp-gold);
+  color: #1b1405;
+}
+.tp-btn-gold:hover { background: #d6aa58; }
+.tp-btn-ghost {
+  background: var(--tp-white);
+  color: var(--tp-ink);
+  border: 1px solid var(--tp-line);
+}
+.tp-btn-ghost:hover { border-color: #cfd3db; background: #fdfdfc; }
+.tp-btn-ghost-dark {
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.tp-btn-ghost-dark:hover { border-color: rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.04); }
+.tp-btn[disabled] { opacity: 0.6; cursor: progress; }
+
+/* ── Type helpers ────────────────────────────────────────────────────── */
+.tp-eyebrow {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tp-gold-ink);
+}
+.tp-h2 {
+  font-size: clamp(1.9rem, 1.2rem + 2.4vw, 2.9rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 650;
+  text-wrap: balance;
+}
+.tp-lede {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--tp-slate);
+  text-wrap: pretty;
+}
+
+/* ── Surfaces ────────────────────────────────────────────────────────── */
+.tp-card {
+  background: var(--tp-white);
+  border: 1px solid var(--tp-line);
+  border-radius: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.tp-card-hover:hover {
+  border-color: #d7dae1;
+  box-shadow: 0 10px 30px -14px rgba(20, 33, 61, 0.18);
+  transform: translateY(-2px);
+}
+.tp-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--tp-paper);
+  border: 1px solid var(--tp-line);
+  color: var(--tp-navy);
+}
+
+.tp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+.tp-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: currentColor;
+}
+.tp-pill-core { color: #24704a; background: var(--tp-green-bg); }
+.tp-pill-dev { color: #8a5a10; background: var(--tp-amber-bg); }
+.tp-pill-roadmap { color: var(--tp-slate); background: transparent; border-color: var(--tp-line); }
+.tp-pill-roadmap::before { background: transparent; border: 1.5px solid currentColor; }
+
+/* Hero backdrop: faint grid + warm glow, pure CSS. */
+.tp-hero-bg {
+  background:
+    radial-gradient(60% 50% at 75% 20%, rgba(201, 154, 69, 0.13), transparent 70%),
+    radial-gradient(40% 40% at 10% 0%, rgba(20, 33, 61, 0.06), transparent 70%),
+    linear-gradient(var(--tp-line) 1px, transparent 1px) 0 0 / 56px 56px,
+    linear-gradient(90deg, var(--tp-line) 1px, transparent 1px) 0 0 / 56px 56px,
+    var(--tp-paper);
+  -webkit-mask-image: linear-gradient(#000 55%, transparent);
+  mask-image: linear-gradient(#000 55%, transparent);
+  opacity: 0.9;
+}
+
+.tp-dark {
+  background: radial-gradient(70% 60% at 85% 0%, rgba(201, 154, 69, 0.12), transparent 60%), var(--tp-navy);
+  color: #e9ecf3;
+}
+.tp-dark .tp-lede { color: #a7b0c2; }
+.tp-dark .tp-eyebrow { color: var(--tp-gold); }
+
+/* Mockup chrome */
+.tp-window {
+  background: var(--tp-white);
+  border: 1px solid var(--tp-line);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(20, 33, 61, 0.05), 0 30px 60px -30px rgba(20, 33, 61, 0.35);
+  overflow: hidden;
+}
+.tp-mock-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tp-slate);
+}
+
+/* Form */
+.tp-field label { display: block; font-size: 14px; font-weight: 550; color: #dfe4ee; margin-bottom: 6px; }
+.tp-field .tp-opt { font-weight: 400; color: #8e98ad; }
+.tp-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 16px; /* below 16px iOS Safari zooms on focus */
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.tp-input::placeholder { color: #7d879c; }
+.tp-input:hover { border-color: rgba(255, 255, 255, 0.24); }
+.tp-input:focus { outline: none; border-color: var(--tp-gold); background: rgba(255, 255, 255, 0.06); }
+.tp-input[aria-invalid="true"] { border-color: #f08a7e; }
+select.tp-input option { color: #172033; }
+.tp-err { margin-top: 6px; font-size: 13.5px; color: #f6a69c; }
+
+/* FAQ (native details/summary — zero JS) */
+.tp-faq summary { list-style: none; cursor: pointer; }
+.tp-faq summary::-webkit-details-marker { display: none; }
+.tp-faq .tp-chev { transition: transform 0.2s; }
+.tp-faq[open] .tp-chev { transform: rotate(45deg); }
+}
+
+/* Motion: load-time only, above the fold. */
+@keyframes tp-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.tp-rise { animation: tp-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes tp-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.tp-pop { animation: tp-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes tp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.tp-pulse { animation: tp-pulse 2.4s ease-in-out infinite; }
+@keyframes tp-fade { from { opacity: 0; } to { opacity: 1; } }
+.tp-fade { animation: tp-fade 0.25s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.tp) { scroll-behavior: auto; }
+  .tp-rise, .tp-pop, .tp-pulse, .tp-fade { animation: none; }
+  .tp-card, .tp-btn { transition: none; }
+  .tp-card-hover:hover { transform: none; }
+}

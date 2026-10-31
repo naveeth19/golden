@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Icon, Wordmark } from "./Icons";
 import { NAV_LINKS, GT_SITE } from "@/lib/tripos/content";
 
-export default function Nav() {
+/** `base` prefixes the in-page anchors so the nav works from /tripos subpages. */
+export default function Nav({ base = "" }: { base?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -39,7 +40,7 @@ export default function Nav() {
     >
       <nav aria-label="TripOS" className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-3">
-          <a href="#top" aria-label="TripOS — back to top">
+          <a href={`${base}#top`} aria-label={base ? "TripOS home" : "TripOS — back to top"}>
             <Wordmark />
           </a>
           <a
@@ -54,7 +55,7 @@ export default function Nav() {
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
               <a
-                href={l.href}
+                href={`${base}${l.href}`}
                 className="rounded-lg px-3 py-2 text-[14.5px] text-[var(--tp-slate)] hover:text-[var(--tp-ink)] hover:bg-white/70 transition-colors"
               >
                 {l.label}
@@ -64,7 +65,7 @@ export default function Nav() {
         </ul>
 
         <div className="flex items-center gap-2">
-          <a href="#early-access" className="tp-btn tp-btn-primary hidden sm:inline-flex !min-h-[40px] !text-[14px]">
+          <a href={`${base}#early-access`} className="tp-btn tp-btn-primary hidden sm:inline-flex !min-h-[40px] !text-[14px]">
             Get Early Access
           </a>
           <button
@@ -87,7 +88,7 @@ export default function Nav() {
             {NAV_LINKS.map((l) => (
               <li key={l.href}>
                 <a
-                  href={l.href}
+                  href={`${base}${l.href}`}
                   onClick={() => setOpen(false)}
                   className="block rounded-lg px-2 py-3 text-[16px] font-medium text-[var(--tp-ink)] hover:bg-white"
                 >
@@ -96,7 +97,7 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <a href="#early-access" onClick={() => setOpen(false)} className="tp-btn tp-btn-primary mt-3 w-full">
+          <a href={`${base}#early-access`} onClick={() => setOpen(false)} className="tp-btn tp-btn-primary mt-3 w-full">
             Get Early Access
           </a>
           <a href={GT_SITE} className="mt-4 block text-center text-[13px] text-[var(--tp-slate)]">

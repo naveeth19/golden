@@ -19,6 +19,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/projects/the-shiva-day`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     // Google Ads landing page — also an organic asset.
     { url: `${baseUrl}${SEGMENT.landingPath}`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    // TripOS product page and its legal pages (Meta App Review checks the policy URL).
+    { url: `${baseUrl}/tripos`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/tripos/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/tripos/data-deletion`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const { data: fleet } = await supabase.from("fleet").select("slug").eq("is_active", true);

@@ -8,6 +8,8 @@
 import { WA_NUMBER, PHONE_DISPLAY, TEL_HREF } from "@/lib/tt/content";
 
 export const TRIPOS_PATH = "/tripos";
+export const PRIVACY_PATH = "/tripos/privacy";
+export const DATA_DELETION_PATH = "/tripos/data-deletion";
 export const GT_SITE = "https://www.goldentravels.co/";
 
 // Verified contacts: phone/WhatsApp from lib/tt/content, email from the root
@@ -20,6 +22,16 @@ export const CONTACT = {
     "Hi Golden Travels, I'd like to know more about TripOS for my travel business."
   )}`,
   mailHref: `mailto:naveeth@goldentravels.co?subject=${encodeURIComponent("TripOS early access")}`,
+};
+
+// Legal pages. Operator and contact are the names the site already uses; the
+// founders still have to confirm the legal entity name before Meta App Review.
+export const LEGAL = {
+  operator: "Golden Travels",
+  location: "Bengaluru, Karnataka, India",
+  email: CONTACT.email,
+  mailHref: `mailto:${CONTACT.email}?subject=${encodeURIComponent("TripOS privacy request")}`,
+  updated: "31 October 2026",
 };
 
 export const NAV_LINKS = [

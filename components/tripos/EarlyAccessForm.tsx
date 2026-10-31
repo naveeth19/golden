@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icons";
-import { BUSINESS_TYPES, CHALLENGES, CONTACT } from "@/lib/tripos/content";
+import { BUSINESS_TYPES, CHALLENGES, CONTACT, PRIVACY_PATH } from "@/lib/tripos/content";
 import { LEADS_ENABLED, submitEarlyAccess, type EarlyAccessLead } from "@/lib/tripos/submit";
 
 const EMPTY: EarlyAccessLead = {
@@ -165,7 +165,8 @@ export default function EarlyAccessForm() {
       <p id="tp-privacy" className="text-[13px] leading-relaxed text-[#8e98ad]">
         {LEADS_ENABLED
           ? "We only use these details to respond to your request and to ask for feedback on TripOS. They are stored with Golden Travels' enquiry records and are not shared or sold."
-          : "This form doesn't send or store anything yet. Please use email or WhatsApp to reach us."}
+          : "This form doesn't send or store anything yet. Please use email or WhatsApp to reach us."}{" "}
+        See our <a href={PRIVACY_PATH} className="underline underline-offset-2">Privacy Policy</a>.
       </p>
     </form>
   );

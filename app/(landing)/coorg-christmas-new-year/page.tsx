@@ -11,6 +11,7 @@ import foodImg from "@/public/coorg/food.jpg";
 import fallsImg from "@/public/coorg/falls.jpg";
 import rajasImg from "@/public/coorg/rajas.jpg";
 import templeImg from "@/public/coorg/temple.jpg";
+import coffeeImg from "@/public/coorg/coffee.jpg";
 import roadImg from "@/public/coorg/road.jpg";
 import peakImg from "@/public/coorg/peak.jpg";
 import logoImg from "@/public/coorg/logo.png";
@@ -132,6 +133,7 @@ const SIGHTS = [
   { n: "01", title: "Abbey Falls", body: "One of Coorg's most famous waterfalls, tumbling through the forest.", img: fallsImg, alt: "Aerial view of Abbey Falls through the forest", pos: "center" },
   { n: "02", title: "Raja's Seat", body: "Sweeping valley views over the landscapes of Madikeri.", img: rajasImg, alt: "Mist settling over the valley seen from Raja's Seat", pos: "center 70%" },
   { n: "03", title: "Omkareshwara Temple", body: "A beautiful temple known for its distinctive architectural style.", img: templeImg, alt: "Aerial view of Omkareshwara Temple and its tank", pos: "42% center" },
+  { n: "04", title: "Coffee Plantation", body: "Walk through Coorg's famous coffee-growing heritage.", img: coffeeImg, alt: "Pickers working on green plantation slopes in the hills", pos: "40% center" },
 ] as const;
 
 export default function CoorgFestivePage() {
@@ -399,22 +401,6 @@ export default function CoorgFestivePage() {
                 </div>
               </article>
             ))}
-            <article className="cg-sight" data-reveal style={{ ["--d" as string]: "360ms" }}>
-              <div className="cg-sight__media">
-                <div className="cg-coffee">
-                  <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden>
-                    <ellipse cx="36" cy="36" rx="17" ry="25" fill="none" stroke="#7A5A16" strokeWidth="2.2" transform="rotate(25 36 36)" />
-                    <path d="M28 14 Q44 36 44 58" fill="none" stroke="#7A5A16" strokeWidth="2.2" strokeLinecap="round" />
-                  </svg>
-                  <span>Coorg&apos;s coffee country</span>
-                </div>
-                <span className="cg-sight__num">04</span>
-              </div>
-              <div>
-                <h3>Coffee Plantation</h3>
-                <p>Walk through Coorg&apos;s famous coffee-growing heritage.</p>
-              </div>
-            </article>
           </div>
         </section>
 

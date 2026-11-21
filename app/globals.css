@@ -176,6 +176,13 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+/* Font tokens point at variables set on the /dubai-new-year route wrapper, so
+   they must be inline (resolved where used, not at :root). */
+@theme inline {
+  --font-display: var(--font-dnye-display), Georgia, serif;
+  --font-dnye: var(--font-dnye-sans), system-ui, sans-serif;
+}
+
 /* ── /dubai-new-year campaign tokens ("Midnight Gala"). Utilities are only
    generated where used, so these don't affect the rest of the site. ── */
 @theme {
@@ -194,8 +201,6 @@
   --color-champagne: #D9B871;
   --color-champagne-light: #EAD6A4;
   --color-champagne-deep: #8A6A2A;
-  --font-display: var(--font-dnye-display), Georgia, serif;
-  --font-dnye: var(--font-dnye-sans), system-ui, sans-serif;
   --text-d-xl: clamp(3rem, 8.5vw, 7.5rem);
   --text-d-xl--line-height: 0.92;
   --text-d-xl--letter-spacing: -0.02em;

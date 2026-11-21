@@ -21,6 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}${SEGMENT.landingPath}`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     // Golden Holidays festive campaign (Google Ads + Instagram traffic).
     { url: `${baseUrl}/coorg-christmas-new-year`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
+    // Golden Holidays Dubai New Year's Eve 2027 campaign (Google Ads landing page).
+    { url: `${baseUrl}/dubai-new-year`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     // TripOS product page and its legal pages (Meta App Review checks the policy URL).
     { url: `${baseUrl}/tripos`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/tripos/privacy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },

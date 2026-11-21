@@ -176,3 +176,43 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+/* ── /dubai-new-year campaign tokens ("Midnight Gala"). Utilities are only
+   generated where used, so these don't affect the rest of the site. ── */
+@theme {
+  --color-night: #12141F;
+  --color-night-900: #0C0E16;
+  --color-night-800: #12141F;
+  --color-night-700: #1E2235;
+  --color-night-600: #2A2F48;
+  --color-navy: #1E2235;
+  --color-crimson: #C41E3A;
+  --color-crimson-dark: #A3172F;
+  --color-crimson-light: #E0405A;
+  --color-cream: #F7F5F2;
+  --color-cream-200: #EFEAE2;
+  --color-cream-300: #E4DCCF;
+  --color-champagne: #D9B871;
+  --color-champagne-light: #EAD6A4;
+  --color-champagne-deep: #8A6A2A;
+  --font-display: var(--font-dnye-display), Georgia, serif;
+  --font-dnye: var(--font-dnye-sans), system-ui, sans-serif;
+  --text-d-xl: clamp(3rem, 8.5vw, 7.5rem);
+  --text-d-xl--line-height: 0.92;
+  --text-d-xl--letter-spacing: -0.02em;
+  --text-d-lg: clamp(2.5rem, 5.5vw, 4.75rem);
+  --text-d-lg--line-height: 1;
+  --text-d-lg--letter-spacing: -0.015em;
+  --text-d-md: clamp(2rem, 3.6vw, 3.25rem);
+  --text-d-md--line-height: 1.05;
+  --text-d-md--letter-spacing: -0.01em;
+  --text-d-sm: clamp(1.5rem, 2.2vw, 2rem);
+  --text-d-sm--line-height: 1.15;
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.28em;
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+  --container-page: 1240px;
+  --shadow-deep: 0 40px 80px -30px rgba(5,6,12,.75), 0 18px 36px -18px rgba(5,6,12,.6);
+  --shadow-glow: 0 0 0 1px rgba(217,184,113,.35), 0 20px 60px -20px rgba(217,184,113,.35);
+}

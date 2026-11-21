@@ -1,0 +1,8 @@
+/* Route-scoped styles for /dubai-new-year */
+.dnye { font-family: var(--font-dnye-sans), system-ui, sans-serif; }
+/* Italic accent words use the dedicated (non-preloaded) italic face */
+.dnye .font-display .italic,
+.dnye .font-display.italic {
+  font-family: var(--font-dnye-display-italic), var(--font-dnye-display), Georgia, serif;
+}
+@keyframes dnye-fade-in { to { opacity: 1; } }
